@@ -4,10 +4,11 @@
   "description": "Destiny Word International Ministries - Full Stack Church Management System",
   "scripts": {
     "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "postinstall": "cd backend && npm install",
     "dev:backend": "cd backend && npm run dev",
     "dev:frontend": "cd frontend && npm start",
-    "build": "cd frontend && npm run build",
-    "start": "cd backend && npm start",
+    "build": "cd frontend && npm install && npm run build",
+    "start": "node backend/server.js",
     "seed": "cd backend && node scripts/seed.js"
   }
 }
