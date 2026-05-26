@@ -1,0 +1,18 @@
+.sermon-detail { min-height: 80vh; }
+.sd-hero { background: linear-gradient(135deg, var(--deep-navy), var(--navy)); padding: 5rem 0 3rem; }
+.back-link { color: rgba(255,255,255,0.5); font-size: 0.875rem; display: inline-block; margin-bottom: 1.5rem; }
+.back-link:hover { color: var(--gold); }
+.sd-meta { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+.sd-hero h1 { font-size: clamp(1.75rem, 4vw, 3rem); color: white; max-width: 700px; }
+.sd-speaker { color: rgba(255,255,255,0.6); margin-top: 0.75rem; font-size: 1rem; }
+.sd-scripture { color: var(--gold-light); margin-top: 0.5rem; font-size: 0.9rem; font-style: italic; }
+.sd-body { padding: 3rem 1.5rem; max-width: 900px; }
+.video-wrapper {
+  width: 100%; aspect-ratio: 16/9;
+  background: black; border-radius: 12px; overflow: hidden;
+  box-shadow: var(--shadow-lg); margin-bottom: 2rem;
+}
+.sd-desc h2 { font-size: 1.5rem; color: var(--deep-navy); margin-bottom: 1rem; }
+.sd-desc p { color: var(--text-muted); line-height: 1.8; }
+.sd-stats { margin-top: 1.5rem; display: flex; gap: 1.5rem; }
+.sd-stats span { font-size: 0.875rem; color: var(--text-muted); }

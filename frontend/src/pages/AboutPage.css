@@ -1,0 +1,36 @@
+.about-page {}
+.about-body { padding: 4rem 1.5rem; }
+.about-section { display: flex; align-items: center; gap: 4rem; margin-bottom: 4rem; }
+.about-text { flex: 1; }
+.about-text h2 { font-size: 2rem; color: var(--deep-navy); }
+.about-text p { color: var(--text-muted); line-height: 1.9; margin-top: 1rem; font-size: 1.05rem; }
+.about-cross-visual {
+  font-size: 8rem; color: var(--gold); opacity: 0.2; flex-shrink: 0;
+  font-family: var(--font-display);
+}
+.values-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 4rem; }
+.value-card {
+  background: white; border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.5rem; box-shadow: var(--shadow-sm); text-align: center;
+  transition: all 0.2s;
+}
+.value-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: rgba(201,168,76,0.3); }
+.value-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+.value-card h3 { font-size: 1.1rem; color: var(--deep-navy); margin-bottom: 0.5rem; }
+.value-card p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.6; }
+.vision { flex-direction: column; align-items: flex-start; }
+.contact-section { text-align: center; margin-top: 2rem; }
+.contact-section h2 { font-size: 2rem; color: var(--deep-navy); }
+.contact-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.5rem; margin-top: 2rem; text-align: left; }
+.contact-card {
+  background: var(--deep-navy); color: white; border-radius: var(--radius);
+  padding: 1.5rem; transition: transform 0.2s;
+}
+.contact-card:hover { transform: translateY(-4px); }
+.cc-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+.contact-card h4 { font-size: 1rem; color: var(--gold); margin-bottom: 0.75rem; }
+.contact-card p { font-size: 0.875rem; color: rgba(255,255,255,0.6); line-height: 1.7; }
+@media (max-width: 768px) {
+  .about-section { flex-direction: column; gap: 2rem; }
+  .about-cross-visual { display: none; }
+}

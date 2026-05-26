@@ -1,0 +1,31 @@
+.events-filters { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; }
+.filter-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.filter-tab {
+  padding: 0.4rem 0.875rem; border-radius: 999px; font-size: 0.8rem; font-weight: 500;
+  background: white; border: 1.5px solid var(--border); color: var(--text-muted);
+  cursor: pointer; transition: all 0.2s;
+}
+.filter-tab:hover { border-color: var(--gold); color: var(--gold); }
+.filter-tab.active { background: var(--gold); border-color: var(--gold); color: white; }
+.toggle-label { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; cursor: pointer; color: var(--text-dark); }
+.events-list { display: flex; flex-direction: column; gap: 1.5rem; }
+.event-list-card {
+  background: white; border-radius: var(--radius); border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm); overflow: hidden;
+  display: flex; transition: box-shadow 0.2s;
+}
+.event-list-card:hover { box-shadow: var(--shadow-md); }
+.elc-poster { width: 180px; flex-shrink: 0; background-size: cover; background-position: center; }
+.elc-body { display: flex; gap: 1.5rem; padding: 1.5rem; flex: 1; }
+.elc-date-box { text-align: center; flex-shrink: 0; }
+.elc-month { font-size: 0.7rem; text-transform: uppercase; color: var(--gold); font-weight: 700; letter-spacing: 0.06em; }
+.elc-day { font-family: var(--font-display); font-size: 2.5rem; font-weight: 900; color: var(--deep-navy); line-height: 1; }
+.elc-info { flex: 1; }
+.elc-info h3 { font-size: 1.25rem; color: var(--deep-navy); margin: 0.4rem 0; }
+.elc-time, .elc-location { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem; }
+.elc-desc { font-size: 0.875rem; color: var(--text-muted); line-height: 1.7; margin-top: 0.5rem; }
+@media (max-width: 600px) {
+  .elc-poster { display: none; }
+  .elc-body { flex-direction: column; }
+  .event-list-card { flex-direction: column; }
+}

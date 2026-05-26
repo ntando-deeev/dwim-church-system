@@ -1,0 +1,142 @@
+.home-page { overflow-x: hidden; }
+
+/* Hero */
+.hero {
+  min-height: 100vh; display: flex; align-items: center;
+  position: relative; overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--deep-navy) 0%, var(--navy) 40%, #1a3a5c 100%);
+}
+.hero-bg::before {
+  content: '✝'; position: absolute; right: 8%; top: 50%; transform: translateY(-50%);
+  font-size: clamp(12rem, 22vw, 22rem); color: rgba(201,168,76,0.04); line-height: 1;
+  font-family: var(--font-display); pointer-events: none;
+}
+.hero-overlay {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 20% 60%, rgba(201,168,76,0.07) 0%, transparent 60%);
+}
+.hero-content {
+  position: relative; z-index: 1; padding: 6rem 1.5rem 4rem; max-width: 680px;
+}
+.hero-badge {
+  display: inline-block; padding: 0.4rem 1rem; border-radius: 999px;
+  background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.3);
+  color: var(--gold-light); font-size: 0.8rem; font-weight: 600;
+  letter-spacing: 0.04em; margin-bottom: 1.5rem;
+}
+.hero-title {
+  font-size: clamp(2.75rem, 6vw, 5rem); color: white; line-height: 1.05;
+  margin-bottom: 1.5rem; font-weight: 900;
+}
+.hero-desc {
+  font-size: 1.1rem; color: rgba(255,255,255,0.7); line-height: 1.8;
+  max-width: 520px; margin-bottom: 2.5rem;
+}
+.hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+.hero-btn { padding: 0.875rem 2rem !important; font-size: 1rem !important; }
+.hero-scroll-indicator {
+  position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+}
+.scroll-dot {
+  width: 6px; height: 6px; background: var(--gold); border-radius: 50%;
+  animation: bounce 1.5s infinite;
+}
+@keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(10px); } }
+
+/* Service Times */
+.service-times {
+  background: white; padding: 0; border-bottom: 1px solid var(--border);
+}
+.times-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+}
+.time-card {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1.75rem 2rem; border-right: 1px solid var(--border);
+  transition: background 0.2s;
+}
+.time-card:last-child { border-right: none; }
+.time-card:hover { background: rgba(201,168,76,0.04); }
+.time-icon { font-size: 2rem; flex-shrink: 0; }
+.time-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gold); font-weight: 600; }
+.time-day { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--deep-navy); }
+.time-time { font-size: 0.875rem; color: var(--text-muted); margin-top: 2px; }
+
+/* Section */
+.section-padded { padding: 5rem 0; }
+.bg-dark { background: var(--deep-navy); }
+.section-header.light h2 { color: white; }
+.section-header.light p { color: rgba(255,255,255,0.5); }
+
+/* Announcements */
+.announcements-strip { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+.ann-card {
+  padding: 1.25rem; border-radius: var(--radius);
+  border-left: 4px solid var(--gold);
+  background: white; box-shadow: var(--shadow-sm);
+}
+.ann-urgent { border-left-color: var(--danger); }
+.ann-prayer { border-left-color: #7c3aed; }
+.ann-giving { border-left-color: var(--success); }
+.ann-pin { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.4rem; display: block; }
+.ann-card h3 { font-size: 1rem; margin-bottom: 0.4rem; color: var(--deep-navy); }
+.ann-card p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.6; }
+
+/* Events */
+.events-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+.event-card {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius); overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.event-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+.event-img { height: 180px; background-size: cover; background-position: center; }
+.event-body { padding: 1.25rem; }
+.event-body h3 { font-size: 1.1rem; color: white; margin: 0.5rem 0; }
+.event-date, .event-location { font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-bottom: 0.25rem; }
+.event-desc { font-size: 0.85rem; color: rgba(255,255,255,0.4); margin-top: 0.5rem; line-height: 1.6; }
+
+/* Sermons */
+.sermons-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+.sermon-card {
+  background: white; border: 1px solid var(--border); border-radius: var(--radius);
+  overflow: hidden; transition: all 0.2s; display: block;
+  box-shadow: var(--shadow-sm);
+}
+.sermon-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+.sermon-thumb {
+  height: 190px; background: linear-gradient(135deg, var(--navy), var(--deep-navy));
+  background-size: cover; background-position: center;
+  display: flex; align-items: center; justify-content: center; position: relative;
+}
+.sermon-play {
+  font-size: 2.5rem; color: var(--gold); opacity: 0.8;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+.sermon-play-overlay {
+  position: absolute; inset: 0; background: rgba(0,0,0,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.5rem; color: white; opacity: 0;
+  transition: opacity 0.2s;
+}
+.sermon-card:hover .sermon-play-overlay { opacity: 1; }
+.sermon-body { padding: 1.25rem; }
+.sermon-body h3 { font-size: 1rem; color: var(--deep-navy); margin: 0.5rem 0; }
+.sermon-speaker, .sermon-scripture { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
+
+/* CTA */
+.cta-section { padding: 4rem 0; background: linear-gradient(135deg, var(--navy), var(--deep-navy)); }
+.cta-box { text-align: center; padding: 3rem; }
+.cta-box h2 { font-size: 2.5rem; color: white; margin-bottom: 1rem; }
+.cta-box p { color: rgba(255,255,255,0.6); max-width: 500px; margin: 0 auto 2rem; font-size: 1.05rem; }
+.cta-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+@media (max-width: 768px) {
+  .times-grid { grid-template-columns: 1fr; }
+  .time-card { border-right: none; border-bottom: 1px solid var(--border); }
+  .time-card:last-child { border-bottom: none; }
+  .hero-title { font-size: 2.5rem; }
+}

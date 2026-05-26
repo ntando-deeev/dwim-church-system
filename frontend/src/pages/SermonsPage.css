@@ -1,0 +1,41 @@
+.page-hero {
+  background: linear-gradient(135deg, var(--deep-navy), var(--navy));
+  padding: 5rem 0 3rem; text-align: center;
+}
+.page-hero h1 { font-size: 3rem; color: white; }
+.page-hero p { color: rgba(255,255,255,0.5); margin-top: 0.5rem; font-size: 1.05rem; }
+.page-body { padding: 3rem 1.5rem; }
+.search-bar { max-width: 500px; margin: 0 auto 3rem; }
+.sermon-card-full {
+  display: block; background: white; border-radius: var(--radius); overflow: hidden;
+  border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+  transition: all 0.2s; color: inherit;
+}
+.sermon-card-full:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+.sermon-thumb-full {
+  height: 180px; background: linear-gradient(135deg, var(--navy), var(--deep-navy));
+  background-size: cover; background-position: center;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.play-btn {
+  width: 50px; height: 50px; background: rgba(201,168,76,0.9); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.25rem; color: white; z-index: 1;
+  transition: transform 0.2s;
+}
+.sermon-card-full:hover .play-btn { transform: scale(1.1); }
+.sermon-views {
+  position: absolute; bottom: 0.5rem; right: 0.75rem;
+  background: rgba(0,0,0,0.6); color: rgba(255,255,255,0.8);
+  font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 6px;
+}
+.sermon-info { padding: 1.25rem; }
+.sermon-info h3 { font-size: 1rem; color: var(--deep-navy); margin: 0.4rem 0; }
+.s-speaker, .s-scripture, .s-series { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem; }
+.pagination { display: flex; align-items: center; justify-content: center; gap: 1.5rem; margin-top: 3rem; }
+.pagination span { font-size: 0.875rem; color: var(--text-muted); }
+.empty-state { text-align: center; padding: 5rem 1rem; }
+.empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+.empty-state h3 { font-size: 1.25rem; color: var(--deep-navy); }
+.empty-state p { color: var(--text-muted); margin-top: 0.5rem; }

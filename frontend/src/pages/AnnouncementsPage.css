@@ -1,0 +1,15 @@
+.ann-list { display: flex; flex-direction: column; gap: 1.5rem; max-width: 800px; margin: 0 auto; }
+.ann-item {
+  background: white; border-radius: var(--radius); overflow: hidden;
+  border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+  border-left: 5px solid var(--gold);
+}
+.ann-item.urgent { border-left-color: var(--danger); }
+.ann-item.prayer { border-left-color: #7c3aed; }
+.ann-item.giving { border-left-color: var(--success); }
+.ann-img { width: 100%; max-height: 300px; object-fit: cover; }
+.ann-item-body { padding: 1.5rem; }
+.ann-item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem; }
+.ann-date { font-size: 0.8rem; color: var(--text-muted); }
+.ann-item h2 { font-size: 1.25rem; color: var(--deep-navy); margin-bottom: 0.75rem; }
+.ann-item p { color: var(--text-muted); line-height: 1.8; }
