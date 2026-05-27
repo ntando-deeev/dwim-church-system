@@ -21,6 +21,10 @@ import AdminEvents from './pages/admin/AdminEvents';
 import AdminSermons from './pages/admin/AdminSermons';
 import AdminAnnouncements from './pages/admin/AdminAnnouncements';
 import AdminUsers from './pages/admin/AdminUsers';
+import AdminTV from './pages/admin/AdminTV';
+
+// Synagogue TV
+import SynagogueTV from './pages/SynagogueTV';
 
 // Layout
 import PublicLayout from './components/PublicLayout';
@@ -45,6 +49,7 @@ function AppRoutes() {
         <Route path="/gallery" element={<GalleryPage />} />
         <Route path="/announcements" element={<AnnouncementsPage />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/tv" element={<SynagogueTV />} />
       </Route>
 
       {/* Login */}
@@ -58,6 +63,7 @@ function AppRoutes() {
         <Route path="sermons" element={<AdminSermons />} />
         <Route path="announcements" element={<AdminAnnouncements />} />
         <Route path="users" element={<AdminUsers />} />
+        <Route path="tv" element={<AdminTV />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

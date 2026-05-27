@@ -5,6 +5,7 @@ import './AdminLayout.css';
 
 const navItems = [
   { to: '/admin', label: 'Dashboard', icon: '⊞', exact: true },
+  { to: '/admin/tv', label: 'Synagogue TV', icon: '📺' },
   { to: '/admin/media', label: 'Media Library', icon: '🎬' },
   { to: '/admin/sermons', label: 'Sermons', icon: '📖' },
   { to: '/admin/events', label: 'Events', icon: '📅' },

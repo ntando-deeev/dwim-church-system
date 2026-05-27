@@ -140,3 +140,21 @@
   .time-card:last-child { border-bottom: none; }
   .hero-title { font-size: 2.5rem; }
 }
+
+/* Synagogue TV Promo */
+.stv-promo-section { background: var(--deep-navy); }
+.stv-promo-box {
+  display: flex; align-items: center; gap: 2rem;
+  background: linear-gradient(135deg, rgba(201,168,76,0.12), rgba(201,168,76,0.04));
+  border: 1.5px solid rgba(201,168,76,0.3);
+  border-radius: var(--radius-lg);
+  padding: 2rem 2.5rem;
+  flex-wrap: wrap;
+}
+.stv-promo-icon { font-size: 3.5rem; flex-shrink: 0; }
+.stv-promo-content { flex: 1; min-width: 200px; }
+.stv-promo-content h2 { color: var(--white); font-size: 1.8rem; margin-bottom: 0.4rem; }
+.stv-promo-content p { color: rgba(255,255,255,0.6); font-size: 0.95rem; }
+.stv-promo-btn { flex-shrink: 0; }
+@media (max-width: 600px) { .stv-promo-box { flex-direction: column; text-align: center; } }
+

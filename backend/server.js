@@ -39,6 +39,7 @@ app.use('/api/sermons', require('./routes/sermons'));
 app.use('/api/announcements', require('./routes/announcements'));
 app.use('/api/gallery', require('./routes/gallery'));
 app.use('/api/dashboard', require('./routes/dashboard'));
+app.use('/api/tv', require('./routes/tv'));
 
 // Serve frontend in production
 if (process.env.NODE_ENV === 'production') {

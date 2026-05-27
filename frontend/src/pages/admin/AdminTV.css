@@ -1,0 +1,142 @@
+/* ── Admin TV Specific Styles ─── */
+
+/* Form layout */
+.modal-form { padding: 1.5rem; max-height: 75vh; overflow-y: auto; }
+.form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-span-2 { grid-column: span 2; }
+.form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.modal-close { background: none; font-size: 1.2rem; color: var(--text-muted); cursor: pointer; padding: 0.25rem; border-radius: 4px; transition: color 0.2s; }
+.modal-close:hover { color: var(--text-dark); }
+
+@media (max-width: 600px) {
+  .form-grid-2 { grid-template-columns: 1fr; }
+  .form-span-2 { grid-column: span 1; }
+}
+
+
+.atv-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+.atv-tab {
+  position: relative;
+  padding: 0.75rem 1.5rem;
+  background: none;
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.atv-tab:hover { color: var(--gold); }
+.atv-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+.atv-live-indicator {
+  width: 8px; height: 8px;
+  background: #ef4444;
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse-dot 1.4s ease-in-out infinite;
+  box-shadow: 0 0 0 0 rgba(239,68,68,0.7);
+}
+@keyframes pulse-dot {
+  0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.7); }
+  70% { box-shadow: 0 0 0 6px rgba(239,68,68,0); }
+  100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
+}
+
+/* Stream cards */
+.atv-stream-list { display: flex; flex-direction: column; gap: 1rem; }
+.atv-stream-card {
+  display: flex; align-items: center; gap: 1.5rem;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  transition: box-shadow 0.2s;
+  flex-wrap: wrap;
+}
+.atv-stream-card:hover { box-shadow: var(--shadow-md); }
+.atv-stream-card.stream-live {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
+  background: rgba(239,68,68,0.02);
+}
+
+.atv-stream-status { flex-shrink: 0; width: 90px; text-align: center; }
+
+.atv-live-badge {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: rgba(239,68,68,0.1);
+  color: #dc2626;
+  border: 1px solid rgba(239,68,68,0.3);
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem; font-weight: 800;
+  letter-spacing: 0.08em;
+}
+.atv-scheduled-badge {
+  display: inline-flex; align-items: center;
+  background: rgba(201,168,76,0.1);
+  color: var(--gold-dark);
+  border: 1px solid rgba(201,168,76,0.3);
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem; font-weight: 700;
+}
+
+.atv-stream-info { flex: 1; min-width: 200px; }
+.atv-stream-info h3 { font-size: 1rem; margin-bottom: 0.25rem; }
+.atv-stream-info p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.2rem; }
+.atv-stream-time { font-size: 0.8rem; color: var(--text-muted); }
+.atv-stream-url {
+  display: inline-block;
+  font-size: 0.78rem; color: var(--gold);
+  word-break: break-all;
+  margin-top: 0.25rem;
+}
+
+.atv-stream-actions {
+  display: flex; align-items: center; gap: 0.5rem;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+/* Category badges in table */
+.cat-sermon  { background: rgba(201,168,76,0.15); color: var(--gold-dark); }
+.cat-worship { background: rgba(139,92,246,0.15); color: #7c3aed; }
+.cat-prayer  { background: rgba(16,185,129,0.15); color: #059669; }
+.cat-teaching{ background: rgba(59,130,246,0.15); color: #2563eb; }
+.cat-testimony{ background: rgba(245,158,11,0.15); color: #d97706; }
+.cat-event   { background: rgba(239,68,68,0.15); color: #dc2626; }
+.cat-live    { background: rgba(239,68,68,0.2); color: #dc2626; }
+.cat-other   { background: rgba(107,114,128,0.15); color: #4b5563; }
+
+.badge-success { background: rgba(16,185,129,0.15); color: #059669; }
+.badge-muted   { background: rgba(107,114,128,0.12); color: #6b7280; }
+
+/* Checkbox group */
+.form-checkboxes { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.checkbox-label {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.875rem; cursor: pointer;
+  color: var(--text-dark);
+}
+.checkbox-label input[type="checkbox"] {
+  width: 16px; height: 16px; accent-color: var(--gold); cursor: pointer;
+}
+
+/* Modal sizes */
+.modal-lg { max-width: 720px !important; }
+.modal-sm { max-width: 400px !important; }
+
+@media (max-width: 600px) {
+  .atv-stream-card { flex-direction: column; align-items: flex-start; }
+  .atv-stream-status { width: auto; }
+}

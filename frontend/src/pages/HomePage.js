@@ -165,6 +165,20 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Synagogue TV Banner */}
+      <section className="section-padded stv-promo-section">
+        <div className="container">
+          <div className="stv-promo-box">
+            <div className="stv-promo-icon">📺</div>
+            <div className="stv-promo-content">
+              <h2>Synagogue TV</h2>
+              <p>Watch sermons, worship sessions, teachings, testimonies and live services — anytime, anywhere.</p>
+            </div>
+            <Link to="/tv" className="btn btn-primary stv-promo-btn">Watch Now</Link>
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="cta-section">
         <div className="container">
