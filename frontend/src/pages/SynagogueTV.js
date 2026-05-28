@@ -8,16 +8,25 @@ const CATEGORIES = ['all', 'sermon', 'worship', 'prayer', 'teaching', 'testimony
 
 function getEmbedUrl(url) {
   if (!url) return '';
-  // YouTube
-  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
-  if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}?rel=0&autoplay=1`;
-  // YouTube Live
-  const ytLive = url.match(/youtube\.com\/live\/([a-zA-Z0-9_-]+)/);
+  // YouTube watch links: youtube.com/watch?v=ID (with any extra params)
+  const ytWatch = url.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+  if (ytWatch) return `https://www.youtube.com/embed/${ytWatch[1]}?rel=0&autoplay=1`;
+  // youtu.be short links
+  const ytShort = url.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+  if (ytShort) return `https://www.youtube.com/embed/${ytShort[1]}?rel=0&autoplay=1`;
+  // YouTube embed links (already correct)
+  const ytEmbed = url.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/);
+  if (ytEmbed) return `https://www.youtube.com/embed/${ytEmbed[1]}?rel=0&autoplay=1`;
+  // YouTube Live links: youtube.com/live/ID (strip query params)
+  const ytLive = url.match(/youtube\.com\/live\/([a-zA-Z0-9_-]{11})/);
   if (ytLive) return `https://www.youtube.com/embed/${ytLive[1]}?autoplay=1`;
+  // YouTube Shorts: youtube.com/shorts/ID
+  const ytShorts = url.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/);
+  if (ytShorts) return `https://www.youtube.com/embed/${ytShorts[1]}?rel=0&autoplay=1`;
   // Vimeo
   const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
   if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1`;
-  // Cloudinary / direct video
+  // Cloudinary / direct video — handled by isDirectVideo, return as-is
   return url;
 }
 
@@ -112,8 +121,9 @@ export default function SynagogueTV() {
                   title={playing.title}
                   src={embedUrl}
                   frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
+                  referrerPolicy="strict-origin-when-cross-origin"
                   className="stv-iframe"
                 />
               ) : (

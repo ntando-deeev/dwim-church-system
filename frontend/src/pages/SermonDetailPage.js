@@ -40,7 +40,7 @@ export default function SermonDetailPage() {
         {(sermon.videoUrl || sermon.youtubeUrl) && (
           <div className="video-wrapper">
             <ReactPlayer
-              url={sermon.videoUrl}
+              url={sermon.videoUrl || sermon.youtubeUrl}
               width="100%" height="100%"
               controls playing={false}
               style={{ borderRadius: '12px', overflow: 'hidden' }}
