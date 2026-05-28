@@ -36,8 +36,16 @@ export function AuthProvider({ children }) {
     else setLoading(false);
   }, [token, fetchMe]);
 
-  const login = async (email, password) => {
-    const { data } = await axios.post(`${API}/api/auth/login`, { email, password });
+  const login = async (emailOrToken, passwordOrUser) => {
+    // Support both: login(email, password) and login(token, user) from signup
+    if (typeof passwordOrUser === 'object') {
+      // Called from signup with pre-issued token+user
+      localStorage.setItem('dwim_token', emailOrToken);
+      setToken(emailOrToken);
+      setUser(passwordOrUser);
+      return passwordOrUser;
+    }
+    const { data } = await axios.post(`${API}/api/auth/login`, { email: emailOrToken, password: passwordOrUser });
     localStorage.setItem('dwim_token', data.token);
     setToken(data.token);
     setUser(data.user);

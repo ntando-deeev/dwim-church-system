@@ -49,9 +49,15 @@ export default function PublicLayout() {
             ))}
             {isAdmin && <Link to="/admin" className="nav-link admin-link">Admin Panel</Link>}
             {user ? (
-              <button className="btn btn-secondary nav-btn" onClick={() => { logout(); navigate('/'); }}>Logout</button>
+              <>
+                <Link to="/member" className="btn btn-primary nav-btn">My Portal</Link>
+                <button className="btn btn-secondary nav-btn" onClick={() => { logout(); navigate('/'); }}>Logout</button>
+              </>
             ) : (
-              <Link to="/login" className="btn btn-primary nav-btn">Sign In</Link>
+              <>
+                <Link to="/signup" className="btn btn-primary nav-btn">Sign Up Free</Link>
+                <Link to="/login" className="btn btn-secondary nav-btn">Sign In</Link>
+              </>
             )}
           </div>
 
@@ -76,6 +82,13 @@ export default function PublicLayout() {
             <div className="footer-col">
               <h4>Quick Links</h4>
               {navLinks.map(l => <Link key={l.to} to={l.to}>{l.label}</Link>)}
+            </div>
+            <div className="footer-col">
+              <h4>Member Portal</h4>
+              <Link to="/signup">🎁 Sign Up Free — Get Church Email</Link>
+              <Link to="/member">📬 My Inbox</Link>
+              <Link to="/member?tab=prayer">🙏 Prayer Wall</Link>
+              <Link to="/member?tab=giving">💛 Giving</Link>
             </div>
             <div className="footer-col">
               <h4>Connect With Us</h4>

@@ -1,0 +1,191 @@
+/* ── Layout ─────────────────────────────────────────────────── */
+.md-layout { display: flex; min-height: 100vh; background: #f4f6fb; }
+.md-sidebar {
+  width: 260px; min-width: 260px;
+  background: linear-gradient(180deg, #0a1628 0%, #1a2744 100%);
+  display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  transition: transform 0.3s;
+}
+.md-main { flex: 1; padding: 2rem; max-width: 1000px; overflow-x: hidden; }
+
+/* ── Sidebar ─────────────────────────────────────────────────── */
+.md-sidebar-brand { display: flex; align-items: center; gap: 0.75rem; padding: 1.5rem 1.25rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.md-sidebar-cross { font-size: 1.75rem; color: #c9a84c; }
+.md-sidebar-title { font-size: 1rem; font-weight: 800; color: #fff; }
+.md-sidebar-sub { font-size: 0.7rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; }
+.md-sidebar-nav { flex: 1; padding: 1rem 0.75rem; display: flex; flex-direction: column; gap: 0.25rem; }
+.md-nav-item {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.7rem 1rem; border-radius: 10px; border: none; cursor: pointer;
+  background: transparent; color: rgba(255,255,255,0.7); font-size: 0.9rem;
+  text-align: left; transition: all 0.2s; width: 100%; position: relative;
+}
+.md-nav-item:hover { background: rgba(255,255,255,0.1); color: #fff; }
+.md-nav-item.active { background: #c9a84c; color: #0a1628; font-weight: 700; }
+.md-nav-icon { font-size: 1.1rem; }
+.md-nav-badge { margin-left: auto; background: #e53e3e; color: #fff; border-radius: 20px; padding: 0.1rem 0.5rem; font-size: 0.7rem; font-weight: 700; }
+.md-sidebar-footer { padding: 1rem 1.25rem; border-top: 1px solid rgba(255,255,255,0.1); }
+.md-sidebar-user { display: flex; align-items: center; gap: 0.75rem; }
+.md-sidebar-avatar { width: 38px; height: 38px; border-radius: 50%; background: #c9a84c; display: flex; align-items: center; justify-content: center; font-weight: 800; color: #0a1628; font-size: 1rem; flex-shrink: 0; }
+.md-sidebar-user-name { font-size: 0.875rem; font-weight: 700; color: #fff; }
+.md-sidebar-user-email { font-size: 0.7rem; color: rgba(255,255,255,0.5); word-break: break-all; }
+.md-sidebar-btn { font-size: 0.75rem; padding: 0.35rem 0.75rem; flex: 1; }
+
+/* ── Mobile header ───────────────────────────────────────────── */
+.md-mobile-header { display: none; position: sticky; top: 0; z-index: 100; background: #0a1628; padding: 1rem 1.25rem; align-items: center; justify-content: space-between; }
+.md-hamburger { background: none; border: none; color: #c9a84c; font-size: 1.5rem; cursor: pointer; }
+.md-mobile-title { color: #fff; font-weight: 800; font-size: 1rem; }
+.md-mobile-badges { display: flex; gap: 0.5rem; }
+.md-mobile-badge { background: #e53e3e; color: #fff; border-radius: 20px; padding: 0.1rem 0.5rem; font-size: 0.75rem; }
+.md-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 90; }
+
+/* ── Section ──────────────────────────────────────────────────── */
+.md-section { max-width: 800px; }
+.md-section h2 { font-size: 1.5rem; color: #0a1628; font-weight: 800; margin-bottom: 1.25rem; }
+.md-subsection-title { font-size: 1.1rem; color: #333; font-weight: 700; margin: 0 0 1rem; }
+.md-loading { padding: 3rem; text-align: center; color: #888; }
+.md-empty { padding: 2rem; text-align: center; color: #999; background: #fff; border-radius: 12px; }
+
+/* ── Welcome / Stats ──────────────────────────────────────────── */
+.md-welcome-banner {
+  background: linear-gradient(135deg, #0a1628, #1a2744);
+  border-radius: 16px; padding: 1.5rem; color: #fff;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+.md-welcome-banner h2 { font-size: 1.4rem; margin-bottom: 0.25rem; }
+.md-church-email { font-size: 0.85rem; color: #c9a84c; }
+.md-role-badge { background: #c9a84c; color: #0a1628; border-radius: 20px; padding: 0.3rem 1rem; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; }
+.md-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+.md-stat-card { background: #fff; border-radius: 14px; padding: 1.25rem; text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 0.25rem; }
+.md-stat-icon { font-size: 1.5rem; }
+.md-stat-num { font-size: 1.6rem; font-weight: 800; color: #0a1628; }
+.md-stat-label { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+
+/* ── Verse ────────────────────────────────────────────────────── */
+.md-verse-card {
+  background: linear-gradient(135deg, #fff9ec, #fff3d6);
+  border: 2px solid #c9a84c; border-radius: 14px; padding: 1.25rem 1.5rem;
+  display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1.5rem;
+}
+.md-verse-icon { font-size: 1.75rem; flex-shrink: 0; }
+.md-verse-text { font-style: italic; color: #333; margin-bottom: 0.25rem; font-size: 0.95rem; }
+.md-verse-ref { font-weight: 700; color: #c9a84c; font-size: 0.85rem; }
+
+/* ── Notifications ─────────────────────────────────────────────── */
+.md-notifications-panel { background: #fff; border-radius: 14px; padding: 1.25rem; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+.md-panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.md-panel-header h3 { font-size: 1rem; color: #0a1628; }
+.md-text-btn { background: none; border: none; color: #c9a84c; cursor: pointer; font-size: 0.85rem; font-weight: 600; padding: 0; }
+.md-text-btn.danger { color: #e53e3e; margin-left: 0.5rem; }
+.md-notif-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.md-notif-item { padding: 0.75rem 1rem; border-radius: 10px; background: #f9fafb; border-left: 3px solid #e2e8f0; }
+.md-notif-item.unread { background: #fff9ec; border-left-color: #c9a84c; }
+.md-notif-title { font-weight: 600; font-size: 0.875rem; color: #0a1628; }
+.md-notif-msg { font-size: 0.8rem; color: #666; margin-top: 0.15rem; }
+.md-notif-time { font-size: 0.75rem; color: #aaa; margin-top: 0.25rem; }
+
+/* ── Inbox ────────────────────────────────────────────────────── */
+.md-inbox-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.md-compose-btn { padding: 0.5rem 1.25rem; font-size: 0.875rem; }
+.md-inbox-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+.md-tab { padding: 0.5rem 1.25rem; border-radius: 8px; border: 2px solid #e2e8f0; background: #fff; cursor: pointer; font-size: 0.875rem; color: #555; transition: all 0.2s; }
+.md-tab.active { border-color: #c9a84c; background: #c9a84c; color: #0a1628; font-weight: 700; }
+.md-inbox-body { display: flex; gap: 1rem; background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); min-height: 400px; }
+.md-mail-list { width: 280px; min-width: 280px; border-right: 1px solid #f0f0f0; overflow-y: auto; }
+.md-mail-row { padding: 1rem; border-bottom: 1px solid #f5f5f5; cursor: pointer; transition: background 0.15s; }
+.md-mail-row:hover { background: #f9fafb; }
+.md-mail-row.active { background: #fff9ec; border-left: 3px solid #c9a84c; }
+.md-mail-row.unread .md-mail-from { font-weight: 800; }
+.md-mail-from { font-size: 0.875rem; color: #0a1628; font-weight: 600; margin-bottom: 0.2rem; }
+.md-mail-subject { font-size: 0.8rem; color: #555; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.md-mail-date { font-size: 0.7rem; color: #aaa; margin-top: 0.25rem; }
+.md-mail-view { flex: 1; padding: 1.5rem; overflow-y: auto; }
+.md-mail-view-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #f0f0f0; }
+.md-mail-view-header h3 { font-size: 1.1rem; color: #0a1628; margin-bottom: 0.25rem; }
+.md-mail-meta { font-size: 0.8rem; color: #888; }
+.md-delete-btn { background: none; border: 1px solid #e53e3e; color: #e53e3e; padding: 0.35rem 0.75rem; border-radius: 8px; cursor: pointer; font-size: 0.8rem; white-space: nowrap; }
+.md-mail-body { font-size: 0.925rem; color: #333; line-height: 1.7; white-space: pre-wrap; }
+.md-compose-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 200; padding: 1rem; }
+.md-compose-card { background: #fff; border-radius: 16px; padding: 1.75rem; width: 100%; max-width: 520px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+.md-compose-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.md-compose-header h3 { color: #0a1628; font-size: 1.1rem; }
+.md-close-btn { background: none; border: none; font-size: 1.25rem; cursor: pointer; color: #888; }
+.md-compose-form { display: flex; flex-direction: column; gap: 0.75rem; }
+.md-compose-body { resize: vertical; }
+.md-compose-actions { display: flex; gap: 0.75rem; }
+
+/* ── Prayer ────────────────────────────────────────────────────── */
+.md-prayer-form { background: #fff; border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 0.75rem; }
+.md-prayer-form-footer { display: flex; justify-content: space-between; align-items: center; }
+.md-checkbox { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: #555; cursor: pointer; }
+.md-prayer-list { display: flex; flex-direction: column; gap: 1rem; }
+.md-prayer-card { background: #fff; border-radius: 14px; padding: 1.25rem; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border-left: 4px solid #e2e8f0; }
+.md-prayer-card.answered { border-left-color: #38a169; }
+.md-prayer-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+.md-prayer-card-header h3 { font-size: 1rem; color: #0a1628; margin-bottom: 0.25rem; }
+.md-prayer-author { font-size: 0.8rem; color: #888; }
+.md-answered-badge { background: #c6f6d5; color: #276749; border-radius: 20px; padding: 0.15rem 0.6rem; font-size: 0.75rem; font-weight: 700; margin-left: 0.5rem; }
+.md-pray-btn { background: #fff9ec; border: 2px solid #c9a84c; color: #c9a84c; border-radius: 10px; padding: 0.4rem 0.75rem; cursor: pointer; font-weight: 700; font-size: 0.875rem; white-space: nowrap; }
+.md-prayer-body { font-size: 0.9rem; color: #444; line-height: 1.65; }
+.md-prayer-responses { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #f0f0f0; display: flex; flex-direction: column; gap: 0.5rem; }
+.md-prayer-response { background: #f0f7ff; border-radius: 8px; padding: 0.6rem 0.9rem; font-size: 0.85rem; color: #333; }
+.md-prayer-actions { margin-top: 0.75rem; }
+.md-prayer-respond { margin-top: 0.75rem; }
+
+/* ── Giving ────────────────────────────────────────────────────── */
+.md-giving-total { background: linear-gradient(135deg, #0a1628, #1a2744); border-radius: 14px; padding: 1.5rem; display: flex; flex-direction: column; align-items: center; margin-bottom: 1.5rem; color: #fff; }
+.md-giving-total span { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.7; }
+.md-giving-total-num { font-size: 2.5rem; font-weight: 900; color: #c9a84c; }
+.md-giving-form { background: #fff; border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 1rem; }
+.md-giving-form h3 { font-size: 1rem; color: #0a1628; margin-bottom: 0.25rem; }
+.md-giving-table { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+.md-giving-table table { width: 100%; border-collapse: collapse; }
+.md-giving-table th { background: #f9fafb; padding: 0.75rem 1rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: #888; text-align: left; }
+.md-giving-table td { padding: 0.85rem 1rem; border-bottom: 1px solid #f5f5f5; font-size: 0.875rem; color: #333; }
+.md-giving-amount { font-weight: 700; color: #0a1628; }
+.md-cat-badge { padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #e2e8f0; color: #4a5568; text-transform: capitalize; }
+
+/* ── Events ────────────────────────────────────────────────────── */
+.md-events-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+.md-event-card { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+.md-event-poster { height: 120px; background-size: cover; background-position: center; background-color: #e2e8f0; }
+.md-event-body { padding: 1rem; }
+.md-event-date { font-size: 0.75rem; color: #c9a84c; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.md-event-body h4 { font-size: 0.95rem; color: #0a1628; margin: 0.25rem 0; }
+.md-event-loc { font-size: 0.8rem; color: #888; margin-bottom: 0.5rem; }
+.md-reg-btn { padding: 0.4rem 1rem; font-size: 0.8rem; width: 100%; }
+.md-registered-label { font-size: 0.85rem; color: #38a169; font-weight: 600; }
+.md-status-badge { padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+.md-status-badge.status-registered { background: #ebf8ff; color: #2b6cb0; }
+.md-status-badge.status-attended { background: #c6f6d5; color: #276749; }
+.md-status-badge.status-cancelled { background: #fff5f5; color: #c53030; }
+
+/* ── Directory ─────────────────────────────────────────────────── */
+.md-directory-search { margin-bottom: 1.25rem; }
+.md-directory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
+.md-member-card { background: #fff; border-radius: 14px; padding: 1.25rem; display: flex; gap: 1rem; box-shadow: 0 2px 12px rgba(0,0,0,0.06); align-items: flex-start; }
+.md-member-avatar img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+.md-avatar-placeholder { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #c9a84c, #f0c060); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem; color: #0a1628; flex-shrink: 0; }
+.md-member-info h4 { font-size: 0.95rem; color: #0a1628; margin-bottom: 0.2rem; }
+.md-member-email { font-size: 0.8rem; color: #c9a84c; margin-bottom: 0.3rem; word-break: break-all; }
+.md-member-meta { font-size: 0.8rem; color: #888; }
+.md-member-bio { font-size: 0.8rem; color: #555; margin-top: 0.3rem; line-height: 1.5; }
+.md-member-since { font-size: 0.75rem; color: #bbb; margin-top: 0.5rem; }
+
+/* ── Misc ──────────────────────────────────────────────────────── */
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.35rem; }
+.form-group label { font-size: 0.85rem; font-weight: 600; color: #333; }
+
+@media(max-width:768px) {
+  .md-sidebar { position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; transform: translateX(-100%); }
+  .md-sidebar.open { transform: translateX(0); }
+  .md-mobile-header { display: flex; }
+  .md-main { padding: 1rem; }
+  .md-stats-grid { grid-template-columns: 1fr 1fr; }
+  .md-inbox-body { flex-direction: column; }
+  .md-mail-list { width: 100%; min-width: unset; border-right: none; border-bottom: 1px solid #f0f0f0; max-height: 220px; }
+  .form-row { grid-template-columns: 1fr; }
+}

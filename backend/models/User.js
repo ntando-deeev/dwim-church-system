@@ -8,8 +8,14 @@ const userSchema = new mongoose.Schema({
   role: { type: String, enum: ['admin', 'member', 'pastor', 'deacon'], default: 'member' },
   avatar: { type: String, default: '' },
   phone: { type: String, default: '' },
+  idNumber: { type: String, default: '' },
+  country: { type: String, default: '' },
   department: { type: String, default: '' },
   bio: { type: String, default: '' },
+  churchEmail: { type: String, unique: true, sparse: true, lowercase: true, trim: true },
+  notifyLiveStream: { type: Boolean, default: true },
+  notifyNewSermon: { type: Boolean, default: true },
+  notifyNewEvent: { type: Boolean, default: true },
   isActive: { type: Boolean, default: true },
   lastLogin: { type: Date },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
@@ -22,7 +28,7 @@ userSchema.pre('save', async function(next) {
   next();
 });
 
-userSchema.methods.comparePassword = async function(candidatePassword) {
+userSchema.methods.comparePassword = function(candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
 

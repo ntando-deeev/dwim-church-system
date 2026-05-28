@@ -32,6 +32,7 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/signup', require('./routes/signup'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/media', require('./routes/media'));
 app.use('/api/events', require('./routes/events'));
@@ -40,6 +41,12 @@ app.use('/api/announcements', require('./routes/announcements'));
 app.use('/api/gallery', require('./routes/gallery'));
 app.use('/api/dashboard', require('./routes/dashboard'));
 app.use('/api/tv', require('./routes/tv'));
+app.use('/api/mail', require('./routes/mail'));
+app.use('/api/prayer', require('./routes/prayer'));
+app.use('/api/giving', require('./routes/giving'));
+app.use('/api/notifications', require('./routes/notifications'));
+app.use('/api/registrations', require('./routes/registrations'));
+app.use('/api/members', require('./routes/members'));
 
 // Serve frontend in production
 if (process.env.NODE_ENV === 'production') {

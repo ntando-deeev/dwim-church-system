@@ -180,14 +180,52 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
+      {/* Member Signup CTA */}
+      <section className="section-padded member-signup-section">
+        <div className="container">
+          <div className="member-signup-box">
+            <div className="member-signup-left">
+              <div className="member-signup-badge">🎁 Free Membership</div>
+              <h2>Get Your Free Church Email</h2>
+              <p>Sign up as a DWIM member and receive your personal <strong>@ntando.org</strong> church email. Access your prayer requests, giving history, member directory, event registrations and inbox — all in one place.</p>
+              <ul className="member-signup-perks">
+                <li>✅ Free church email (yourname@ntando.org)</li>
+                <li>✅ Personal member dashboard</li>
+                <li>✅ Prayer request wall</li>
+                <li>✅ Event registration</li>
+                <li>✅ Internal church inbox</li>
+                <li>✅ Giving & tithe records</li>
+              </ul>
+              <div className="member-signup-actions">
+                <Link to="/signup" className="btn btn-primary">Sign Up for Free →</Link>
+                <Link to="/login" className="btn btn-secondary">Already a Member? Sign In</Link>
+              </div>
+            </div>
+            <div className="member-signup-right">
+              <div className="member-email-preview-card">
+                <div className="mep-label">Your Church Email Will Look Like</div>
+                <div className="mep-email">john.doe@ntando.org</div>
+                <div className="mep-divider" />
+                <div className="mep-features">
+                  <div className="mep-feature"><span>📬</span> Receive messages from pastors & members</div>
+                  <div className="mep-feature"><span>🙏</span> Post & pray for requests</div>
+                  <div className="mep-feature"><span>💛</span> Track your giving & tithes</div>
+                  <div className="mep-feature"><span>📅</span> Register for events</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="cta-section">
         <div className="container">
           <div className="cta-box">
             <h2>Join Our Community</h2>
             <p>Experience the love of God and the warmth of a faith community that cares for you.</p>
             <div className="cta-actions">
-              <Link to="/events" className="btn btn-primary">Plan Your Visit</Link>
-              <Link to="/gallery" className="btn btn-ghost">View Gallery</Link>
+              <Link to="/signup" className="btn btn-primary">Sign Up Free</Link>
+              <Link to="/events" className="btn btn-ghost">Plan Your Visit</Link>
             </div>
           </div>
         </div>

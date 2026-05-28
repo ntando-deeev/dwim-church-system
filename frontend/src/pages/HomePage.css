@@ -158,3 +158,37 @@
 .stv-promo-btn { flex-shrink: 0; }
 @media (max-width: 600px) { .stv-promo-box { flex-direction: column; text-align: center; } }
 
+
+/* ── Member Signup Section ───────────────────────────────────── */
+.member-signup-section { background: #f4f6fb; }
+.member-signup-box {
+  background: linear-gradient(135deg, #0a1628 0%, #1a2744 100%);
+  border-radius: 24px; padding: 3rem;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center;
+  box-shadow: 0 20px 60px rgba(10,22,40,0.3);
+}
+.member-signup-badge {
+  display: inline-block; background: #c9a84c; color: #0a1628;
+  border-radius: 20px; padding: 0.35rem 1rem; font-size: 0.8rem;
+  font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem;
+}
+.member-signup-left h2 { font-size: 2rem; color: #fff; margin-bottom: 0.75rem; }
+.member-signup-left p { color: rgba(255,255,255,0.75); font-size: 0.95rem; line-height: 1.7; margin-bottom: 1.25rem; }
+.member-signup-perks { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.75rem; }
+.member-signup-perks li { color: rgba(255,255,255,0.85); font-size: 0.875rem; }
+.member-signup-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+
+.member-email-preview-card {
+  background: #fff; border-radius: 20px; padding: 2rem;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+.mep-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 0.5rem; }
+.mep-email { font-size: 1.3rem; font-weight: 800; color: #c9a84c; margin-bottom: 1.25rem; word-break: break-all; }
+.mep-divider { height: 1px; background: #f0f0f0; margin-bottom: 1.25rem; }
+.mep-features { display: flex; flex-direction: column; gap: 0.75rem; }
+.mep-feature { display: flex; align-items: center; gap: 0.75rem; font-size: 0.875rem; color: #333; }
+.mep-feature span { font-size: 1.1rem; }
+
+@media(max-width:768px) {
+  .member-signup-box { grid-template-columns: 1fr; padding: 2rem 1.5rem; gap: 2rem; }
+}

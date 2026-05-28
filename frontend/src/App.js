@@ -12,6 +12,10 @@ import GalleryPage from './pages/GalleryPage';
 import AboutPage from './pages/AboutPage';
 import AnnouncementsPage from './pages/AnnouncementsPage';
 
+// Member pages
+import SignupPage from './pages/SignupPage';
+import MemberDashboard from './pages/MemberDashboard';
+
 // Admin pages
 import LoginPage from './pages/LoginPage';
 import AdminLayout from './components/AdminLayout';
@@ -37,6 +41,13 @@ function ProtectedRoute({ children }) {
   return children;
 }
 
+function MemberRoute({ children }) {
+  const { user, loading } = useAuth();
+  if (loading) return <div className="page-loader"><div className="spinner" /></div>;
+  if (!user) return <Navigate to="/login" replace />;
+  return children;
+}
+
 function AppRoutes() {
   return (
     <Routes>
@@ -52,8 +63,12 @@ function AppRoutes() {
         <Route path="/tv" element={<SynagogueTV />} />
       </Route>
 
-      {/* Login */}
+      {/* Auth */}
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignupPage />} />
+
+      {/* Member portal */}
+      <Route path="/member" element={<MemberRoute><MemberDashboard /></MemberRoute>} />
 
       {/* Admin */}
       <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
