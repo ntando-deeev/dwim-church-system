@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema({
   notifyLiveStream: { type: Boolean, default: true },
   notifyNewSermon: { type: Boolean, default: true },
   notifyNewEvent: { type: Boolean, default: true },
+  watchlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'TVContent' }],
   isActive: { type: Boolean, default: true },
   lastLogin: { type: Date },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

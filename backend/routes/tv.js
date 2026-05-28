@@ -241,3 +241,118 @@ router.delete('/streams/:id', protect, adminOnly, async (req, res) => {
 });
 
 module.exports = router;
+
+// ─── COMMENTS (Watch Party Chat) ─────────────────────────────────────────────
+const TVComment = require('../models/TVComment');
+
+// GET comments for a video
+router.get('/content/:id/comments', async (req, res) => {
+  try {
+    const comments = await TVComment.find({ content: req.params.id, isDeleted: false })
+      .populate('author', 'name churchEmail avatar')
+      .sort({ createdAt: -1 })
+      .limit(100);
+    res.json({ comments });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// POST a comment on a video (must be logged in)
+router.post('/content/:id/comments', protect, async (req, res) => {
+  try {
+    const { text } = req.body;
+    if (!text || !text.trim()) return res.status(400).json({ error: 'Comment text required' });
+    const item = await TVComment.create({
+      content: req.params.id,
+      author: req.user._id,
+      text: text.trim(),
+    });
+    const populated = await TVComment.findById(item._id).populate('author', 'name churchEmail avatar');
+    res.status(201).json({ comment: populated });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// POST a comment on live stream
+router.post('/streams/:id/comments', protect, async (req, res) => {
+  try {
+    const { text } = req.body;
+    if (!text || !text.trim()) return res.status(400).json({ error: 'Comment text required' });
+    const item = await TVComment.create({
+      stream: req.params.id,
+      author: req.user._id,
+      text: text.trim(),
+    });
+    const populated = await TVComment.findById(item._id).populate('author', 'name churchEmail avatar');
+    res.status(201).json({ comment: populated });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// GET comments for live stream
+router.get('/streams/:id/comments', async (req, res) => {
+  try {
+    const comments = await TVComment.find({ stream: req.params.id, isDeleted: false })
+      .populate('author', 'name churchEmail avatar')
+      .sort({ createdAt: 1 })
+      .limit(200);
+    res.json({ comments });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// PATCH like/unlike a comment
+router.patch('/comments/:id/like', protect, async (req, res) => {
+  try {
+    const comment = await TVComment.findById(req.params.id);
+    if (!comment) return res.status(404).json({ error: 'Not found' });
+    const idx = comment.likes.indexOf(req.user._id);
+    if (idx === -1) { comment.likes.push(req.user._id); comment.likeCount += 1; }
+    else { comment.likes.splice(idx, 1); comment.likeCount -= 1; }
+    await comment.save();
+    res.json({ likeCount: comment.likeCount, liked: idx === -1 });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// DELETE a comment (author or admin)
+router.delete('/comments/:id', protect, async (req, res) => {
+  try {
+    const comment = await TVComment.findById(req.params.id);
+    if (!comment) return res.status(404).json({ error: 'Not found' });
+    if (!comment.author.equals(req.user._id) && req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+    comment.isDeleted = true;
+    await comment.save();
+    res.json({ message: 'Deleted' });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// ─── WATCHLIST ────────────────────────────────────────────────────────────────
+const User = require('../models/User');
+
+// GET my watchlist
+router.get('/watchlist', protect, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).populate({
+      path: 'watchlist',
+      match: { isPublished: true },
+      select: 'title speaker thumbnailUrl category duration views date isPinned',
+    });
+    res.json({ watchlist: user.watchlist || [] });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// POST toggle watchlist (add or remove)
+router.post('/watchlist/:id', protect, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    const idx = user.watchlist.indexOf(req.params.id);
+    let saved;
+    if (idx === -1) {
+      user.watchlist.push(req.params.id);
+      saved = true;
+    } else {
+      user.watchlist.splice(idx, 1);
+      saved = false;
+    }
+    await user.save({ validateBeforeSave: false });
+    res.json({ saved, watchlistCount: user.watchlist.length });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});

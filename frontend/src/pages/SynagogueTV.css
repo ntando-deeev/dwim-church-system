@@ -279,3 +279,205 @@
 @media (max-width: 500px) {
   .stv-grid { grid-template-columns: 1fr; }
 }
+
+/* ── Watch Party Chat ──────────────────────────────────────────────────────── */
+.stv-player-with-chat {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+.stv-player-col { display: flex; flex-direction: column; gap: 0; }
+.stv-player-btns { display: flex; gap: 0.75rem; align-items: center; }
+
+.stv-chat {
+  background: var(--navy);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  height: 520px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.stv-chat-live { height: 560px; }
+.stv-chat-header {
+  padding: 0.85rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--gold);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(0,0,0,0.2);
+}
+.stv-chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(201,168,76,0.3) transparent;
+}
+.stv-chat-empty {
+  color: rgba(255,255,255,0.4);
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 2rem 1rem;
+}
+.stv-chat-msg {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+}
+.stv-chat-msg.own { flex-direction: row-reverse; }
+.stv-chat-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--gold);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; font-weight: 800; color: var(--navy);
+  overflow: hidden;
+}
+.stv-chat-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.stv-chat-bubble {
+  background: rgba(255,255,255,0.07);
+  border-radius: 12px 12px 12px 4px;
+  padding: 0.5rem 0.75rem;
+  max-width: 80%;
+}
+.stv-chat-msg.own .stv-chat-bubble {
+  background: rgba(201,168,76,0.18);
+  border-radius: 12px 12px 4px 12px;
+}
+.stv-chat-name { font-size: 0.7rem; font-weight: 700; color: var(--gold); margin-bottom: 0.2rem; }
+.stv-chat-text { font-size: 0.875rem; color: rgba(255,255,255,0.9); line-height: 1.5; word-break: break-word; }
+.stv-chat-actions { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.3rem; }
+.stv-chat-like {
+  background: none; border: none; cursor: pointer;
+  font-size: 0.75rem; color: rgba(255,255,255,0.5);
+  padding: 0; transition: color 0.15s;
+}
+.stv-chat-like:hover { color: #e57373; }
+.stv-chat-del {
+  background: none; border: none; cursor: pointer;
+  font-size: 0.7rem; color: rgba(255,255,255,0.3);
+  padding: 0;
+}
+.stv-chat-del:hover { color: #e57373; }
+.stv-chat-time { font-size: 0.68rem; color: rgba(255,255,255,0.3); margin-left: auto; }
+.stv-chat-form {
+  display: flex;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  background: rgba(0,0,0,0.2);
+}
+.stv-chat-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+}
+.stv-chat-input::placeholder { color: rgba(255,255,255,0.3); }
+.stv-chat-send {
+  padding: 0.75rem 1.1rem;
+  background: var(--gold);
+  border: none;
+  color: var(--navy);
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.stv-chat-send:disabled { opacity: 0.4; cursor: default; }
+.stv-chat-send:not(:disabled):hover { opacity: 0.85; }
+.stv-chat-signin {
+  padding: 0.75rem 1rem;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.5);
+  text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.stv-chat-signin a { color: var(--gold); }
+
+/* ── Watchlist ─────────────────────────────────────────────────────────────── */
+.stv-hero-watchlist-btn {
+  margin-top: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255,255,255,0.1);
+  border: 2px solid var(--gold);
+  color: var(--gold);
+  padding: 0.6rem 1.4rem;
+  border-radius: 30px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.stv-hero-watchlist-btn:hover { background: var(--gold); color: var(--navy); }
+
+.stv-watchlist-panel {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow);
+}
+.stv-watchlist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+.stv-watchlist-header h2 { font-size: 1.3rem; color: var(--navy); }
+.stv-close-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: var(--text-dark);
+}
+
+.stv-watchlist-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(201,168,76,0.4);
+  color: var(--gold);
+  padding: 0.3rem 0.7rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.stv-watchlist-btn:hover { background: var(--gold); color: var(--navy); }
+.stv-watchlist-btn.saved { background: var(--gold); color: var(--navy); }
+.stv-watchlist-btn span { font-size: 0.72rem; }
+
+.stv-card-bookmark {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.stv-card:hover .stv-card-bookmark { opacity: 1; }
+
+/* Responsive for chat */
+@media (max-width: 900px) {
+  .stv-player-with-chat { grid-template-columns: 1fr; }
+  .stv-chat { height: 380px; }
+}
