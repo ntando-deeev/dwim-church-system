@@ -81,17 +81,14 @@ export default function AdminTV() {
   const handleContentSubmit = async (e) => {
     e.preventDefault(); setSavingContent(true);
     try {
-      const payload = {
-        ...contentForm,
-        featured: contentForm.featured,
-        isPublished: contentForm.isPublished,
-        isPinned: contentForm.isPinned,
-      };
+      // Use FormData so boolean fields are sent as strings that the backend can parse correctly
+      const fd = new FormData();
+      Object.entries(contentForm).forEach(([k, v]) => fd.append(k, String(v)));
       if (editContent) {
-        await axios.put(`${API_URL}/api/tv/content/${editContent._id}`, payload);
+        await axios.put(`${API_URL}/api/tv/content/${editContent._id}`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
         toast.success('Updated successfully');
       } else {
-        await axios.post(`${API_URL}/api/tv/content`, payload);
+        await axios.post(`${API_URL}/api/tv/content`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
         toast.success('Video added to Synagogue TV');
       }
       setShowContentModal(false); loadContent();

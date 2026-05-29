@@ -40,9 +40,9 @@ export default function AdminSermons() {
     e.preventDefault(); setSaving(true);
     try {
       const fd = new FormData();
-      Object.entries(form).forEach(([k, v]) => fd.append(k, v));
+      Object.entries(form).forEach(([k, v]) => fd.append(k, String(v)));
       if (videoFile) fd.append('video', videoFile);
-      if (editSermon) await axios.put(`${API_URL}/api/sermons/${editSermon._id}`, form);
+      if (editSermon) await axios.put(`${API_URL}/api/sermons/${editSermon._id}`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
       else await axios.post(`${API_URL}/api/sermons`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
       toast.success(editSermon ? 'Sermon updated' : 'Sermon created');
       setShowModal(false); load();

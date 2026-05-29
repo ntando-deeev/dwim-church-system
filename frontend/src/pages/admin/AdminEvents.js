@@ -42,7 +42,7 @@ export default function AdminEvents() {
     setSaving(true);
     try {
       const fd = new FormData();
-      Object.entries(form).forEach(([k, v]) => fd.append(k, v));
+      Object.entries(form).forEach(([k, v]) => fd.append(k, String(v)));
       if (poster) fd.append('poster', poster);
       if (editEvent) await axios.put(`${API_URL}/api/events/${editEvent._id}`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
       else await axios.post(`${API_URL}/api/events`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });

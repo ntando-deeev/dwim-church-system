@@ -13,13 +13,21 @@ const app = express();
 app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 app.use(morgan('combined'));
 
-// Rate limiting
+// Rate limiting — generous limit for uploads; auth endpoints get a tighter sub-limiter below
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 500,
   message: { error: 'Too many requests, please try again later.' }
 });
 app.use('/api/', limiter);
+
+// Tighter rate limit on auth routes only
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  message: { error: 'Too many login attempts, please try again later.' }
+});
+app.use('/api/auth/login', authLimiter);
 
 // CORS
 app.use(cors({
@@ -61,7 +69,23 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-// Error handler
+// Multer / file-upload error handler (must come before the generic error handler)
+app.use((err, req, res, next) => {
+  const multer = require('multer');
+  if (err instanceof multer.MulterError) {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(413).json({ error: 'File too large. Maximum allowed size exceeded.' });
+    }
+    return res.status(400).json({ error: `File upload error: ${err.message}` });
+  }
+  // Cloudinary / unexpected upload errors
+  if (err && err.message && err.message.toLowerCase().includes('invalid image')) {
+    return res.status(400).json({ error: 'Invalid file type or corrupted file.' });
+  }
+  next(err);
+});
+
+// Generic error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(err.status || 500).json({

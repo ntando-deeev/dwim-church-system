@@ -85,12 +85,30 @@ router.post('/:id/thumbnail', protect, adminOnly, uploadImage.single('thumbnail'
   }
 });
 
-// Admin: update sermon
-router.put('/:id', protect, adminOnly, async (req, res) => {
+// Admin: update sermon (accepts multipart so a video can also be replaced on edit)
+router.put('/:id', protect, adminOnly, uploadVideo.single('video'), async (req, res) => {
   try {
-    const updates = { ...req.body };
-    if (req.body.date) updates.date = new Date(req.body.date);
-    if (req.body.tags) updates.tags = req.body.tags.split(',').map(t => t.trim());
+    const { title, speaker, description, scripture, series, date, featured, isPublished, tags, videoUrl, thumbnailUrl } = req.body;
+    const updates = {
+      title, speaker, description, scripture, series,
+      date: date ? new Date(date) : undefined,
+      featured: featured === 'true',
+      isPublished: isPublished !== 'false',
+      tags: tags ? tags.split(',').map(t => t.trim()) : undefined,
+      videoUrl: videoUrl || undefined,
+      thumbnailUrl: thumbnailUrl || undefined,
+    };
+    // Remove undefined keys so we don't accidentally overwrite existing values
+    Object.keys(updates).forEach(k => updates[k] === undefined && delete updates[k]);
+    if (req.file) {
+      // Replace video — delete old one from Cloudinary first
+      const existing = await Sermon.findById(req.params.id);
+      if (existing && existing.videoPublicId) {
+        await cloudinary.uploader.destroy(existing.videoPublicId, { resource_type: 'video' });
+      }
+      updates.videoUrl = req.file.path;
+      updates.videoPublicId = req.file.filename;
+    }
     const sermon = await Sermon.findByIdAndUpdate(req.params.id, updates, { new: true });
     if (!sermon) return res.status(404).json({ error: 'Sermon not found' });
     res.json({ sermon });

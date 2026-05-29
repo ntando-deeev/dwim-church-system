@@ -41,7 +41,7 @@ export default function AdminAnnouncements() {
     e.preventDefault(); setSaving(true);
     try {
       const fd = new FormData();
-      Object.entries(form).forEach(([k, v]) => fd.append(k, v));
+      Object.entries(form).forEach(([k, v]) => fd.append(k, String(v)));
       if (imgFile) fd.append('image', imgFile);
       if (editItem) await axios.put(`${API_URL}/api/announcements/${editItem._id}`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
       else await axios.post(`${API_URL}/api/announcements`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
