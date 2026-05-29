@@ -7,7 +7,7 @@
     "postinstall": "cd backend && npm install",
     "dev:backend": "cd backend && npm run dev",
     "dev:frontend": "cd frontend && npm start",
-    "build": "cd frontend && npm install && npm run build",
+    "build": "cd frontend && npm install --legacy-peer-deps && npm run build",
     "start": "node backend/server.js",
     "seed": "cd backend && node scripts/seed.js"
   }

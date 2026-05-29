@@ -2,11 +2,13 @@ services:
   - type: web
     name: dst-church-system
     runtime: node
-    buildCommand: cd frontend && npm install && npm run build && cd .. && cd backend && npm install
+    buildCommand: cd frontend && npm install --legacy-peer-deps && npm run build && cd ../backend && npm install
     startCommand: node backend/server.js
     envVars:
       - key: NODE_ENV
         value: production
+      - key: NODE_OPTIONS
+        value: --openssl-legacy-provider
       - key: PORT
         value: 10000
       - key: MONGODB_URI
