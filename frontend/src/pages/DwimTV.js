@@ -342,7 +342,28 @@ export default function DwimTV() {
     setShowWatchlist(true);
   };
 
-  // Load content from URL param on mount
+  const saveProgress = useCallback((contentId, progress, duration) => {
+    if (!token || !contentId || progress < 5) return;
+    axios.post(`${API_URL}/api/watch-history/${contentId}`, { progressSeconds: Math.round(progress), durationSeconds: Math.round(duration) }, authCfg(token)).catch(() => {});
+  }, [token]);
+
+  const handlePlay = useCallback((item, resumeSecs = 0) => {
+    setPlaying(item);
+    setResumeFrom(resumeSecs);
+    setShowWatchlist(false);
+    setSubtitles([]);
+    if (item._id) {
+      axios.get(`${API_URL}/api/tv/content/${item._id}/subtitles`)
+        .then(({ data }) => setSubtitles(data.subtitles || []))
+        .catch(() => {});
+      if (token) {
+        axios.post(`${API_URL}/api/watch-history/${item._id}`, { progressSeconds: resumeSecs, durationSeconds: item.duration || 0 }, authCfg(token)).catch(() => {});
+      }
+    }
+    setTimeout(() => playerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+  }, [token]);
+
+  // Load content from URL param — after handlePlay is defined
   useEffect(() => {
     const vid = searchParams.get('v');
     if (vid) {
@@ -350,33 +371,7 @@ export default function DwimTV() {
         .then(({ data }) => handlePlay(data.content))
         .catch(() => {});
     }
-  }, []);
-
-  // Save watch progress every 15s for direct videos
-  const saveProgress = useCallback((contentId, progress, duration) => {
-    if (!token || !contentId || progress < 5) return;
-    axios.post(`${API_URL}/api/watch-history/${contentId}`, { progressSeconds: Math.round(progress), durationSeconds: Math.round(duration) }, authCfg(token)).catch(() => {});
-  }, [token]);
-
-  const handlePlay = (item, resumeSecs = 0) => {
-    setPlaying(item);
-    setResumeFrom(resumeSecs);
-    setShowWatchlist(false);
-    setSubtitles([]);
-    // Load subtitles
-    if (item._id) {
-      axios.get(`${API_URL}/api/tv/content/${item._id}/subtitles`)
-        .then(({ data }) => setSubtitles(data.subtitles || []))
-        .catch(() => {});
-      // Save to watch history
-      if (token) {
-        axios.post(`${API_URL}/api/watch-history/${item._id}`, { progressSeconds: resumeSecs, durationSeconds: item.duration || 0 }, authCfg(token)).catch(() => {});
-      }
-    }
-    setTimeout(() => playerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-  };
-
-  const handleDownload = async (item) => {
+  }, [handlePlay]);
     try {
       const { data } = await axios.get(`${API_URL}/api/tv/content/${item._id}/download`);
       const a = document.createElement('a');

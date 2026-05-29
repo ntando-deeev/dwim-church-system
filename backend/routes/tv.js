@@ -240,7 +240,6 @@ router.delete('/streams/:id', protect, adminOnly, async (req, res) => {
   }
 });
 
-module.exports = router;
 
 // ─── COMMENTS (Watch Party Chat) ─────────────────────────────────────────────
 const TVComment = require('../models/TVComment');
@@ -418,3 +417,5 @@ router.delete('/content/:id/subtitles/:lang', protect, adminOnly, async (req, re
   }
 });
 
+
+module.exports = router;

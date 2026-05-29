@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { API_URL, useAuth } from '../../context/AuthContext';
-import '../admin/Admin.css';
+import './Admin.css';
 
 const STATUS_COLORS = { pending: '#f59e0b', approved: '#22c55e', rejected: '#ef4444' };
 
