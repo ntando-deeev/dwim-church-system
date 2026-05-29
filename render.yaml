@@ -1,9 +1,13 @@
 services:
   - type: web
-    name: dst-church-system
+    name: dst-synagouge
     runtime: node
+    region: oregon
+    plan: free
     buildCommand: cd frontend && npm install --legacy-peer-deps && npm run build && cd ../backend && npm install
     startCommand: node backend/server.js
+    healthCheckPath: /api/auth/me
+    autoDeploy: true
     envVars:
       - key: NODE_ENV
         value: production
@@ -11,12 +15,12 @@ services:
         value: --openssl-legacy-provider
       - key: PORT
         value: 10000
+      - key: JWT_EXPIRES_IN
+        value: 7d
       - key: MONGODB_URI
         sync: false
       - key: JWT_SECRET
         generateValue: true
-      - key: JWT_EXPIRES_IN
-        value: 7d
       - key: CLOUDINARY_CLOUD_NAME
         sync: false
       - key: CLOUDINARY_API_KEY
@@ -25,5 +29,3 @@ services:
         sync: false
       - key: CLIENT_URL
         sync: false
-    healthCheckPath: /api/auth/me
-    autoDeploy: true
