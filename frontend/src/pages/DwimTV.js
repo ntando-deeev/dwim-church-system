@@ -372,6 +372,8 @@ export default function DwimTV() {
         .catch(() => {});
     }
   }, [handlePlay]);
+
+  const handleDownload = async (item) => {
     try {
       const { data } = await axios.get(`${API_URL}/api/tv/content/${item._id}/download`);
       const a = document.createElement('a');

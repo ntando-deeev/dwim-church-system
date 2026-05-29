@@ -5,6 +5,12 @@ const LiveStream = require('../models/LiveStream');
 const { protect, adminOnly } = require('../middleware/auth');
 const { uploadVideo, uploadImage, cloudinary } = require('../config/cloudinary');
 
+// multer .fields() middleware — accepts an optional video file and an optional thumbnail image
+const uploadTVFields = uploadVideo.fields([
+  { name: 'video', maxCount: 1 },
+  { name: 'thumbnail', maxCount: 1 }
+]);
+
 // ─── PUBLIC ROUTES ──────────────────────────────────────────────────────────
 
 // Get all published TV content
@@ -82,7 +88,7 @@ router.get('/admin/content', protect, adminOnly, async (req, res) => {
 });
 
 // Create TV content
-router.post('/content', protect, adminOnly, uploadVideo.single('video'), async (req, res) => {
+router.post('/content', protect, adminOnly, uploadTVFields, async (req, res) => {
   try {
     const { title, description, category, speaker, date, featured, isPublished, isPinned, tags, videoUrl, thumbnailUrl, duration } = req.body;
     const data = {
@@ -98,9 +104,15 @@ router.post('/content', protect, adminOnly, uploadVideo.single('video'), async (
       duration: Number(duration) || 0,
       createdBy: req.user._id,
     };
-    if (req.file) {
-      data.videoUrl = req.file.path;
-      data.videoPublicId = req.file.filename;
+    const videoFile = req.files?.video?.[0];
+    const thumbFile = req.files?.thumbnail?.[0];
+    if (videoFile) {
+      data.videoUrl = videoFile.path;
+      data.videoPublicId = videoFile.filename;
+    }
+    if (thumbFile) {
+      data.thumbnailUrl = thumbFile.path;
+      data.thumbnailPublicId = thumbFile.filename;
     }
     const item = await TVContent.create(data);
     res.status(201).json({ content: item });
@@ -110,7 +122,7 @@ router.post('/content', protect, adminOnly, uploadVideo.single('video'), async (
 });
 
 // Update TV content
-router.put('/content/:id', protect, adminOnly, uploadVideo.single('video'), async (req, res) => {
+router.put('/content/:id', protect, adminOnly, uploadTVFields, async (req, res) => {
   try {
     const { title, description, category, speaker, date, featured, isPublished, isPinned, tags, videoUrl, thumbnailUrl, duration } = req.body;
     const update = {
@@ -125,14 +137,24 @@ router.put('/content/:id', protect, adminOnly, uploadVideo.single('video'), asyn
       thumbnailUrl: thumbnailUrl || '',
       duration: Number(duration) || 0,
     };
-    if (req.file) {
-      // Replace uploaded video — delete old one from Cloudinary first
+    const videoFile = req.files?.video?.[0];
+    const thumbFile = req.files?.thumbnail?.[0];
+    if (videoFile || thumbFile) {
       const existing = await TVContent.findById(req.params.id);
-      if (existing && existing.videoPublicId) {
-        await cloudinary.uploader.destroy(existing.videoPublicId, { resource_type: 'video' });
+      if (videoFile) {
+        if (existing?.videoPublicId) {
+          await cloudinary.uploader.destroy(existing.videoPublicId, { resource_type: 'video' });
+        }
+        update.videoUrl = videoFile.path;
+        update.videoPublicId = videoFile.filename;
       }
-      update.videoUrl = req.file.path;
-      update.videoPublicId = req.file.filename;
+      if (thumbFile) {
+        if (existing?.thumbnailPublicId) {
+          await cloudinary.uploader.destroy(existing.thumbnailPublicId);
+        }
+        update.thumbnailUrl = thumbFile.path;
+        update.thumbnailPublicId = thumbFile.filename;
+      }
     }
     const item = await TVContent.findByIdAndUpdate(req.params.id, update, { new: true });
     if (!item) return res.status(404).json({ error: 'Not found' });

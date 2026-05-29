@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
@@ -30,6 +30,13 @@ export default function AdminTV() {
   const [contentForm, setContentForm] = useState(CONTENT_BLANK);
   const [savingContent, setSavingContent] = useState(false);
   const [deleteContentId, setDeleteContentId] = useState(null);
+
+  // File upload state
+  const [videoFile, setVideoFile] = useState(null);
+  const [thumbFile, setThumbFile] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const videoRef = useRef();
+  const thumbRef = useRef();
 
   // Streams state
   const [streams, setStreams] = useState([]);
@@ -64,6 +71,9 @@ export default function AdminTV() {
   const openCreateContent = () => {
     setEditContent(null);
     setContentForm({ ...CONTENT_BLANK, date: new Date().toISOString().split('T')[0] });
+    setVideoFile(null);
+    setThumbFile(null);
+    setUploadProgress(0);
     setShowContentModal(true);
   };
   const openEditContent = (item) => {
@@ -76,22 +86,34 @@ export default function AdminTV() {
       isPublished: item.isPublished !== false,
       isPinned: item.isPinned || false,
     });
+    setVideoFile(null);
+    setThumbFile(null);
+    setUploadProgress(0);
     setShowContentModal(true);
   };
   const handleContentSubmit = async (e) => {
-    e.preventDefault(); setSavingContent(true);
+    e.preventDefault(); setSavingContent(true); setUploadProgress(0);
     try {
-      // Use FormData so boolean fields are sent as strings that the backend can parse correctly
       const fd = new FormData();
       Object.entries(contentForm).forEach(([k, v]) => fd.append(k, String(v)));
+      if (videoFile) fd.append('video', videoFile);
+      if (thumbFile) fd.append('thumbnail', thumbFile);
+      const config = {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        onUploadProgress: (e) => {
+          if (e.total) setUploadProgress(Math.round((e.loaded / e.total) * 100));
+        }
+      };
       if (editContent) {
-        await axios.put(`${API_URL}/api/tv/content/${editContent._id}`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+        await axios.put(`${API_URL}/api/tv/content/${editContent._id}`, fd, config);
         toast.success('Updated successfully');
       } else {
-        await axios.post(`${API_URL}/api/tv/content`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+        await axios.post(`${API_URL}/api/tv/content`, fd, config);
         toast.success('Video added to Synagogue TV');
       }
-      setShowContentModal(false); loadContent();
+      setShowContentModal(false);
+      setVideoFile(null); setThumbFile(null); setUploadProgress(0);
+      loadContent();
     } catch (err) { toast.error(err.response?.data?.error || 'Failed to save'); }
     setSavingContent(false);
   };
@@ -301,19 +323,38 @@ export default function AdminTV() {
                     onChange={e => setContentForm({ ...contentForm, speaker: e.target.value })} placeholder="e.g. Pastor John" />
                 </div>
                 <div className="form-group form-span-2">
-                  <label>Video URL</label>
-                  <input className="form-input" value={contentForm.videoUrl}
-                    onChange={e => setContentForm({ ...contentForm, videoUrl: e.target.value })}
-                    placeholder="YouTube, Vimeo, or Cloudinary URL" />
-                  <small style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>
-                    Paste a YouTube link (e.g. https://youtu.be/xxxx), Vimeo link, or direct video URL
-                  </small>
+                  <label>Video File <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(or paste a URL below)</span></label>
+                  <div className="upload-zone" onClick={() => videoRef.current?.click()} style={{ cursor: 'pointer' }}>
+                    <input ref={videoRef} type="file" accept="video/*" style={{ display: 'none' }}
+                      onChange={e => { setVideoFile(e.target.files[0]); setContentForm({ ...contentForm, videoUrl: '' }); }} />
+                    {videoFile
+                      ? <span>🎬 {videoFile.name} ({(videoFile.size / 1024 / 1024).toFixed(1)} MB)</span>
+                      : <span>📁 Click to upload video (MP4, MOV, AVI, MKV, WebM — max 500 MB)</span>}
+                  </div>
+                  <input className="form-input" style={{ marginTop: '0.5rem' }} value={contentForm.videoUrl}
+                    onChange={e => { setContentForm({ ...contentForm, videoUrl: e.target.value }); if (e.target.value) setVideoFile(null); }}
+                    placeholder="— or paste YouTube / Vimeo / direct video URL" />
+                  {uploadProgress > 0 && uploadProgress < 100 && (
+                    <div style={{ marginTop: '0.5rem' }}>
+                      <div style={{ background: 'var(--border)', borderRadius: '4px', overflow: 'hidden', height: '8px' }}>
+                        <div style={{ width: `${uploadProgress}%`, background: 'var(--gold)', height: '100%', transition: 'width 0.3s' }} />
+                      </div>
+                      <small style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>Uploading… {uploadProgress}%</small>
+                    </div>
+                  )}
                 </div>
                 <div className="form-group form-span-2">
-                  <label>Thumbnail URL</label>
-                  <input className="form-input" value={contentForm.thumbnailUrl}
-                    onChange={e => setContentForm({ ...contentForm, thumbnailUrl: e.target.value })}
-                    placeholder="Image URL for thumbnail" />
+                  <label>Thumbnail Image <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(or paste a URL below)</span></label>
+                  <div className="upload-zone" onClick={() => thumbRef.current?.click()} style={{ cursor: 'pointer' }}>
+                    <input ref={thumbRef} type="file" accept="image/*" style={{ display: 'none' }}
+                      onChange={e => { setThumbFile(e.target.files[0]); setContentForm({ ...contentForm, thumbnailUrl: '' }); }} />
+                    {thumbFile
+                      ? <span>🖼️ {thumbFile.name}</span>
+                      : <span>📁 Click to upload thumbnail image</span>}
+                  </div>
+                  <input className="form-input" style={{ marginTop: '0.5rem' }} value={contentForm.thumbnailUrl}
+                    onChange={e => { setContentForm({ ...contentForm, thumbnailUrl: e.target.value }); if (e.target.value) setThumbFile(null); }}
+                    placeholder="— or paste image URL" />
                 </div>
                 <div className="form-group form-span-2">
                   <label>Description</label>
