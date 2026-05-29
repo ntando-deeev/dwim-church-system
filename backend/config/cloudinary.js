@@ -8,38 +8,41 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-// Image/poster storage
+// ─── Image storage ────────────────────────────────────────────────────────
+// resource_type MUST be inside async params function for multer-storage-cloudinary v4
 const imageStorage = new CloudinaryStorage({
   cloudinary,
-  params: {
+  params: async (req, file) => ({
     folder: 'dwim/images',
+    resource_type: 'image',
     allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'],
     transformation: [{ quality: 'auto', fetch_format: 'auto' }]
-  }
+  })
 });
 
-// Video storage
+// ─── Video storage ────────────────────────────────────────────────────────
 const videoStorage = new CloudinaryStorage({
   cloudinary,
-  params: {
+  params: async (req, file) => ({
     folder: 'dwim/videos',
     resource_type: 'video',
     allowed_formats: ['mp4', 'mov', 'avi', 'mkv', 'webm'],
     chunk_size: 6000000
-  }
+  })
 });
 
-// Poster storage
+// ─── Poster storage ───────────────────────────────────────────────────────
 const posterStorage = new CloudinaryStorage({
   cloudinary,
-  params: {
+  params: async (req, file) => ({
     folder: 'dwim/posters',
+    resource_type: 'image',
     allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'pdf'],
     transformation: [{ quality: 'auto' }]
-  }
+  })
 });
 
-// Generic media
+// ─── Generic media storage (auto-detects image vs video) ─────────────────
 const mediaStorage = new CloudinaryStorage({
   cloudinary,
   params: async (req, file) => {
@@ -47,7 +50,9 @@ const mediaStorage = new CloudinaryStorage({
     return {
       folder: isVideo ? 'dwim/videos' : 'dwim/images',
       resource_type: isVideo ? 'video' : 'image',
-      allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'mp4', 'mov', 'avi', 'mkv'],
+      allowed_formats: isVideo
+        ? ['mp4', 'mov', 'avi', 'mkv', 'webm']
+        : ['jpg', 'jpeg', 'png', 'gif', 'webp']
     };
   }
 });

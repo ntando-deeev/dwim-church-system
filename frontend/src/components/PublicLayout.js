@@ -4,8 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import './PublicLayout.css';
 
 const navLinks = [
-  { to: '/', label: 'Home' },
-  { to: '/tv', label: '📺 Synagogue TV' },
+  { to: '/', label: 'Home', exact: true },
+  { to: '/tv', label: '📺 Live TV' },
   { to: '/sermons', label: 'Sermons' },
   { to: '/events', label: 'Events' },
   { to: '/gallery', label: 'Gallery' },
@@ -21,12 +21,16 @@ export default function PublicLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handler);
+    const handler = () => setScrolled(window.scrollY > 24);
+    window.addEventListener('scroll', handler, { passive: true });
     return () => window.removeEventListener('scroll', handler);
   }, []);
 
   useEffect(() => setMobileOpen(false), [location]);
+
+  const isActive = (link) => link.exact
+    ? location.pathname === link.to
+    : location.pathname.startsWith(link.to);
 
   return (
     <div className="public-layout">
@@ -43,25 +47,25 @@ export default function PublicLayout() {
 
           <div className={`navbar-links ${mobileOpen ? 'open' : ''}`}>
             {navLinks.map(l => (
-              <Link key={l.to} to={l.to} className={`nav-link ${location.pathname === l.to ? 'active' : ''}`}>
+              <Link key={l.to} to={l.to} className={`nav-link ${isActive(l) ? 'active' : ''}`}>
                 {l.label}
               </Link>
             ))}
-            {isAdmin && <Link to="/admin" className="nav-link admin-link">Admin Panel</Link>}
+            {isAdmin && <Link to="/admin" className="nav-link admin-link">⚙ Admin</Link>}
             {user ? (
               <>
                 <Link to="/member" className="btn btn-primary nav-btn">My Portal</Link>
-                <button className="btn btn-secondary nav-btn" onClick={() => { logout(); navigate('/'); }}>Logout</button>
+                <button className="btn btn-ghost nav-btn" onClick={() => { logout(); navigate('/'); }}>Sign Out</button>
               </>
             ) : (
               <>
-                <Link to="/signup" className="btn btn-primary nav-btn">Sign Up Free</Link>
-                <Link to="/login" className="btn btn-secondary nav-btn">Sign In</Link>
+                <Link to="/login" className="btn btn-ghost nav-btn">Sign In</Link>
+                <Link to="/signup" className="btn btn-primary nav-btn">Join Us</Link>
               </>
             )}
           </div>
 
-          <button className={`hamburger ${mobileOpen ? 'open' : ''}`} onClick={() => setMobileOpen(!mobileOpen)}>
+          <button className={`hamburger ${mobileOpen ? 'open' : ''}`} onClick={() => setMobileOpen(o => !o)} aria-label="Menu">
             <span /><span /><span />
           </button>
         </div>
@@ -76,29 +80,40 @@ export default function PublicLayout() {
         <div className="container">
           <div className="footer-grid">
             <div className="footer-brand">
-              <div className="footer-logo">✝ DWIM</div>
-              <p>Destiny Word International Ministries — Building lives through the power of God's Word.</p>
+              <div className="footer-logo">
+                <div className="footer-logo-icon">✝</div>
+                DWIM
+              </div>
+              <p>Destiny Word International Ministries — Building lives through the transforming power of God's Word. Join our family of faith, hope, and love.</p>
+              <div className="footer-socials">
+                <a href="#" className="footer-social" aria-label="Facebook">📘</a>
+                <a href="#" className="footer-social" aria-label="YouTube">📺</a>
+                <a href="#" className="footer-social" aria-label="Instagram">📸</a>
+                <a href="#" className="footer-social" aria-label="WhatsApp">💬</a>
+              </div>
             </div>
+
             <div className="footer-col">
-              <h4>Quick Links</h4>
+              <h4>Explore</h4>
               {navLinks.map(l => <Link key={l.to} to={l.to}>{l.label}</Link>)}
             </div>
+
             <div className="footer-col">
               <h4>Member Portal</h4>
-              <Link to="/signup">🎁 Sign Up Free — Get Church Email</Link>
+              <Link to="/signup">✨ Join Free — Get Church Email</Link>
               <Link to="/member">📬 My Inbox</Link>
               <Link to="/member?tab=prayer">🙏 Prayer Wall</Link>
-              <Link to="/member?tab=giving">💛 Giving</Link>
-            </div>
-            <div className="footer-col">
-              <h4>Connect With Us</h4>
-              <p>📍 Join us every Sunday</p>
-              <p>🙏 Midweek Service: Wednesday</p>
-              <p>📖 Prayer & Fasting: Friday</p>
+              <Link to="/member?tab=giving">💛 Online Giving</Link>
+              <Link to="/login">🔐 Sign In</Link>
             </div>
           </div>
+
           <div className="footer-bottom">
-            <p>© {new Date().getFullYear()} Destiny Word International Ministries. All rights reserved.</p>
+            <span>© {new Date().getFullYear()} Destiny Word International Ministries. All rights reserved.</span>
+            <div className="footer-bottom-links">
+              <Link to="/about">About</Link>
+              <a href="mailto:info@dwim.church">Contact</a>
+            </div>
           </div>
         </div>
       </footer>
