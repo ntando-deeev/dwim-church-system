@@ -47,6 +47,10 @@ app.use('/api/giving', require('./routes/giving'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/registrations', require('./routes/registrations'));
 app.use('/api/members', require('./routes/members'));
+app.use('/api/churches', require('./routes/churches'));
+app.use('/api/playlists', require('./routes/playlists'));
+app.use('/api/watch-history', require('./routes/watchHistory'));
+app.use('/api/ratings', require('./routes/ratings'));
 
 // Serve frontend in production
 if (process.env.NODE_ENV === 'production') {

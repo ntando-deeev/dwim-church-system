@@ -27,8 +27,13 @@ import AdminAnnouncements from './pages/admin/AdminAnnouncements';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminTV from './pages/admin/AdminTV';
 
-// Synagogue TV
-import SynagogueTV from './pages/SynagogueTV';
+// Dwim TV
+import DwimTV from './pages/DwimTV';
+import ChurchesPage from './pages/ChurchesPage';
+import ChurchChannelPage from './pages/ChurchChannelPage';
+import ChurchRegisterPage from './pages/ChurchRegisterPage';
+import PlaylistPage from './pages/PlaylistPage';
+import AdminChurches from './pages/admin/AdminChurches';
 
 // Layout
 import PublicLayout from './components/PublicLayout';
@@ -60,7 +65,11 @@ function AppRoutes() {
         <Route path="/gallery" element={<GalleryPage />} />
         <Route path="/announcements" element={<AnnouncementsPage />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route path="/tv" element={<SynagogueTV />} />
+        <Route path="/tv" element={<DwimTV />} />
+        <Route path="/churches" element={<ChurchesPage />} />
+        <Route path="/churches/register" element={<ChurchRegisterPage />} />
+        <Route path="/churches/:slug" element={<ChurchChannelPage />} />
+        <Route path="/playlists/:id" element={<PlaylistPage />} />
       </Route>
 
       {/* Auth */}
@@ -79,6 +88,7 @@ function AppRoutes() {
         <Route path="announcements" element={<AdminAnnouncements />} />
         <Route path="users" element={<AdminUsers />} />
         <Route path="tv" element={<AdminTV />} />
+        <Route path="churches" element={<AdminChurches />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

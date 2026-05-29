@@ -194,3 +194,30 @@
 @media (max-width: 500px) {
   .stats-grid { grid-template-columns: 1fr 1fr; }
 }
+
+/* ─── Admin Churches & Modal Additions ─────────────────────────────── */
+.admin-filter-tabs { display: flex; gap: .4rem; }
+.admin-filter-tab { padding: .4rem .9rem; border-radius: 20px; border: 1.5px solid rgba(255,255,255,.12); background: transparent; color: #aaa; font-size: .82rem; cursor: pointer; transition: all .2s; }
+.admin-filter-tab.active, .admin-filter-tab:hover { background: #7c3aed; border-color: #7c3aed; color: #fff; }
+
+.admin-btn-sm { padding: .3rem .7rem; border-radius: 7px; border: 1px solid rgba(255,255,255,.15); background: rgba(255,255,255,.06); color: #ccc; font-size: .78rem; cursor: pointer; transition: all .2s; }
+.admin-btn-sm:hover { background: rgba(255,255,255,.12); }
+.admin-btn-sm.success { border-color: rgba(34,197,94,.4); color: #22c55e; }
+.admin-btn-sm.success:hover { background: rgba(34,197,94,.1); }
+.admin-btn-sm.danger { border-color: rgba(239,68,68,.4); color: #ef4444; }
+.admin-btn-sm.danger:hover { background: rgba(239,68,68,.1); }
+
+.admin-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+.admin-modal { background: #1a1a2e; border: 1px solid rgba(255,255,255,.1); border-radius: 16px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
+.admin-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,.08); }
+.admin-modal-header h3 { font-size: 1.1rem; font-weight: 700; margin: 0; }
+.admin-modal-close { background: none; border: none; color: #888; font-size: 1.5rem; cursor: pointer; line-height: 1; }
+.admin-modal-body { padding: 1.5rem; display: flex; flex-direction: column; gap: .75rem; }
+.admin-detail-row { display: flex; gap: 1rem; font-size: .9rem; }
+.admin-detail-row span:first-child { color: #888; min-width: 110px; flex-shrink: 0; }
+.admin-detail-row span:last-child { color: #fff; }
+.admin-detail-row.column { flex-direction: column; }
+.admin-modal-actions { display: flex; flex-direction: column; gap: .75rem; margin-top: .5rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,.07); }
+
+.btn-danger { background: #ef4444; border-color: #ef4444; }
+.btn-danger:hover { background: #dc2626; }

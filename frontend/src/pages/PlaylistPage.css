@@ -1,0 +1,24 @@
+.pl-page { min-height: 100vh; background: #0f0f11; color: #fff; padding: 3rem 0 5rem; }
+.pl-loading, .pl-notfound { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; gap: 1rem; }
+.pl-wrap { max-width: 900px; margin: 0 auto; }
+.pl-header { display: flex; gap: 2rem; align-items: flex-start; margin-bottom: 2.5rem; flex-wrap: wrap; }
+.pl-cover { width: 240px; height: 160px; border-radius: 12px; background: linear-gradient(135deg,#1a1040,#0d2137) center/cover; flex-shrink: 0; }
+.pl-header-info { flex: 1; min-width: 200px; }
+.pl-label { font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #7c3aed; margin-bottom: .5rem; }
+.pl-title { font-size: 2rem; font-weight: 800; margin-bottom: .5rem; }
+.pl-desc { color: #aaa; font-size: .9rem; line-height: 1.6; margin-bottom: .75rem; }
+.pl-church { display: inline-flex; align-items: center; gap: .5rem; text-decoration: none; color: #ccc; font-size: .85rem; margin-bottom: .75rem; }
+.pl-church img { width: 24px; height: 24px; border-radius: 6px; object-fit: cover; }
+.pl-stats { display: flex; gap: .75rem; font-size: .85rem; color: #888; margin-bottom: 1rem; }
+.pl-play-btn { padding: .7rem 1.5rem; border-radius: 10px; }
+
+.pl-items { display: flex; flex-direction: column; gap: .75rem; }
+.pl-item { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: inherit; padding: .75rem; border-radius: 10px; border: 1px solid rgba(255,255,255,.05); transition: background .2s, border-color .2s; }
+.pl-item:hover { background: rgba(255,255,255,.04); border-color: rgba(124,58,237,.3); }
+.pl-item-num { width: 28px; text-align: center; color: #666; font-size: .85rem; flex-shrink: 0; }
+.pl-item-thumb { width: 80px; height: 50px; border-radius: 6px; background: #1a1040 center/cover; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: #555; position: relative; }
+.pl-item-dur { position: absolute; bottom: .2rem; right: .2rem; background: rgba(0,0,0,.8); color: #fff; font-size: .65rem; padding: .15rem .3rem; border-radius: 3px; }
+.pl-item-info { flex: 1; }
+.pl-item-title { font-size: .9rem; font-weight: 600; margin-bottom: .2rem; }
+.pl-item-speaker { font-size: .8rem; color: #888; margin-bottom: .2rem; }
+.pl-item-meta { font-size: .75rem; color: #666; display: flex; gap: .5rem; }

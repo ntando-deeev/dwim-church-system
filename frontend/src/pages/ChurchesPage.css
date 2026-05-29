@@ -1,0 +1,72 @@
+.churches-page { min-height: 100vh; background: #0f0f11; color: #fff; }
+
+.churches-hero {
+  background: linear-gradient(135deg, #1a1040 0%, #0d2137 60%, #0f0f11 100%);
+  padding: 5rem 0 3rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+}
+.churches-hero h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: .75rem; }
+.churches-hero p { color: #aaa; font-size: 1.1rem; max-width: 520px; margin: 0 auto 1.5rem; }
+
+.churches-search-wrap { max-width: 480px; margin: 0 auto 1.5rem; }
+.churches-search {
+  width: 100%; padding: .85rem 1.25rem; border-radius: 12px;
+  border: 1.5px solid rgba(255,255,255,.12); background: rgba(255,255,255,.06);
+  color: #fff; font-size: 1rem; outline: none; transition: border-color .2s;
+}
+.churches-search:focus { border-color: #7c3aed; }
+.churches-search::placeholder { color: #666; }
+
+.churches-register-btn { font-size: .95rem; padding: .75rem 1.75rem; border-radius: 10px; }
+
+.churches-content { padding: 2.5rem 0 4rem; }
+.churches-count { color: #888; font-size: .9rem; margin-bottom: 1.5rem; }
+
+.churches-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.church-card {
+  background: rgba(255,255,255,.04); border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.07); overflow: hidden;
+  text-decoration: none; color: inherit; transition: transform .2s, border-color .2s;
+  display: flex; flex-direction: column;
+}
+.church-card:hover { transform: translateY(-4px); border-color: rgba(124,58,237,.4); }
+
+.church-card-cover {
+  height: 120px; background: linear-gradient(135deg,#1a1040,#0d2137);
+  background-size: cover; background-position: center;
+  position: relative; display: flex; align-items: flex-end; padding: 0 1.25rem;
+}
+.church-card-logo-wrap {
+  position: absolute; bottom: -28px; left: 1.25rem;
+  width: 56px; height: 56px; border-radius: 12px;
+  border: 3px solid #0f0f11; overflow: hidden;
+  background: #1a1040; display: flex; align-items: center; justify-content: center;
+}
+.church-card-logo { width: 100%; height: 100%; object-fit: cover; }
+.church-card-logo-placeholder { font-size: 1.5rem; color: #7c3aed; }
+
+.church-card-body { padding: 2.5rem 1.25rem 1.25rem; flex: 1; }
+.church-card-name { font-size: 1.05rem; font-weight: 700; margin-bottom: .3rem; }
+.church-card-location { font-size: .82rem; color: #888; margin-bottom: .5rem; }
+.church-card-desc { font-size: .85rem; color: #aaa; line-height: 1.5; margin-bottom: .75rem; }
+.church-card-stats { font-size: .82rem; color: #666; display: flex; gap: 1rem; }
+
+.church-card-skeleton {
+  height: 260px; background: rgba(255,255,255,.04);
+  border-radius: 16px; animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer {
+  0%,100% { opacity: .4; } 50% { opacity: .7; }
+}
+
+.churches-loading { display: grid; grid-template-columns: repeat(auto-fill,minmax(280px,1fr)); gap: 1.5rem; }
+.churches-empty { text-align: center; padding: 5rem 0; }
+.churches-empty-icon { font-size: 4rem; margin-bottom: 1rem; }
+.churches-empty h3 { font-size: 1.4rem; margin-bottom: .5rem; }
+.churches-empty p { color: #888; margin-bottom: 1.5rem; }

@@ -356,3 +356,65 @@ router.post('/watchlist/:id', protect, async (req, res) => {
     res.json({ saved, watchlistCount: user.watchlist.length });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
+
+
+// ─── DOWNLOAD ────────────────────────────────────────────────────────────────
+
+// Download content (only if allowDownload is true)
+router.get('/content/:id/download', async (req, res) => {
+  try {
+    const item = await TVContent.findById(req.params.id).select('title videoUrl downloadUrl allowDownload');
+    if (!item) return res.status(404).json({ error: 'Not found' });
+    if (!item.allowDownload) return res.status(403).json({ error: 'Download not allowed for this content' });
+    const url = item.downloadUrl || item.videoUrl;
+    if (!url) return res.status(404).json({ error: 'No download URL available' });
+    // Redirect to the file URL (Cloudinary / direct)
+    res.json({ downloadUrl: url, title: item.title });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ─── SUBTITLES ────────────────────────────────────────────────────────────────
+
+// Get subtitles for content
+router.get('/content/:id/subtitles', async (req, res) => {
+  try {
+    const item = await TVContent.findById(req.params.id).select('subtitles title');
+    if (!item) return res.status(404).json({ error: 'Not found' });
+    res.json({ subtitles: item.subtitles || [] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Add subtitle track (admin)
+router.post('/content/:id/subtitles', protect, adminOnly, async (req, res) => {
+  try {
+    const { label, lang, url } = req.body;
+    if (!label || !lang || !url) return res.status(400).json({ error: 'label, lang, and url are required' });
+    const item = await TVContent.findByIdAndUpdate(
+      req.params.id,
+      { $push: { subtitles: { label, lang, url } } },
+      { new: true }
+    );
+    res.json({ subtitles: item.subtitles });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Remove subtitle track (admin)
+router.delete('/content/:id/subtitles/:lang', protect, adminOnly, async (req, res) => {
+  try {
+    const item = await TVContent.findByIdAndUpdate(
+      req.params.id,
+      { $pull: { subtitles: { lang: req.params.lang } } },
+      { new: true }
+    );
+    res.json({ subtitles: item.subtitles });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+

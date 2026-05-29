@@ -5,7 +5,8 @@ import './PublicLayout.css';
 
 const navLinks = [
   { to: '/', label: 'Home', exact: true },
-  { to: '/tv', label: '📺 Live TV' },
+  { to: '/tv', label: '📺 Dwim TV' },
+  { to: '/churches', label: '⛪ Churches' },
   { to: '/sermons', label: 'Sermons' },
   { to: '/events', label: 'Events' },
   { to: '/gallery', label: 'Gallery' },
