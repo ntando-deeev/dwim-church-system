@@ -21,7 +21,7 @@ export default function AdminSermons() {
   const load = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(`${API_URL}/api/sermons?limit=30`);
+      const { data } = await axios.get(`${API_URL}/api/sermons/admin/all?limit=50`);
       setSermons(data.sermons);
     } catch { toast.error('Failed to load sermons'); }
     setLoading(false);

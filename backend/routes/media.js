@@ -29,6 +29,30 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Admin: get ALL media including private items, for the admin management panel
+// MUST be before /:id to avoid Express matching 'admin' as an id
+router.get('/admin/all', protect, adminOnly, async (req, res) => {
+  try {
+    const { type, category, page = 1, limit = 30, search } = req.query;
+    const query = {};
+    if (type) query.type = type;
+    if (category) query.category = category;
+    if (search) query.$or = [
+      { title: { $regex: search, $options: 'i' } },
+      { description: { $regex: search, $options: 'i' } },
+    ];
+    const media = await Media.find(query)
+      .populate('uploadedBy', 'name')
+      .sort('-createdAt')
+      .skip((page - 1) * limit)
+      .limit(Number(limit));
+    const total = await Media.countDocuments(query);
+    res.json({ media, total, pages: Math.ceil(total / limit) });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Public: get single media + increment views
 router.get('/:id', async (req, res) => {
   try {

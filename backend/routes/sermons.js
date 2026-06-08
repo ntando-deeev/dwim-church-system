@@ -32,6 +32,23 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Admin: get ALL sermons (including unpublished) for management panel
+// MUST be before /:id to avoid Express matching 'admin' as an id
+router.get('/admin/all', protect, adminOnly, async (req, res) => {
+  try {
+    const { page = 1, limit = 50 } = req.query;
+    const sermons = await Sermon.find()
+      .populate('createdBy', 'name')
+      .sort('-date')
+      .skip((page - 1) * limit)
+      .limit(Number(limit));
+    const total = await Sermon.countDocuments();
+    res.json({ sermons, total, pages: Math.ceil(total / limit) });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Public: get single sermon + views
 router.get('/:id', async (req, res) => {
   try {

@@ -32,7 +32,7 @@ export default function AdminMedia() {
     try {
       const params = { page, limit: 15, search };
       if (filter !== 'all') params.type = filter;
-      const { data } = await axios.get(`${API_URL}/api/media`, { params });
+      const { data } = await axios.get(`${API_URL}/api/media/admin/all`, { params });
       setMedia(data.media);
       setTotalPages(data.pages);
     } catch (e) { toast.error('Failed to load media'); }

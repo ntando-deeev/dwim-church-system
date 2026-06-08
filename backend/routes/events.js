@@ -24,6 +24,25 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Admin: get ALL events (including unpublished) for management panel
+// MUST be before /:id to avoid Express matching 'admin' as an id
+router.get('/admin/all', protect, adminOnly, async (req, res) => {
+  try {
+    const { page = 1, limit = 50, category } = req.query;
+    const query = {};
+    if (category) query.category = category;
+    const events = await Event.find(query)
+      .populate('createdBy', 'name')
+      .sort('-createdAt')
+      .skip((page - 1) * limit)
+      .limit(Number(limit));
+    const total = await Event.countDocuments(query);
+    res.json({ events, total, pages: Math.ceil(total / limit) });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Public: get single event
 router.get('/:id', async (req, res) => {
   try {

@@ -22,7 +22,7 @@ export default function AdminEvents() {
   const load = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(`${API_URL}/api/events?limit=30`);
+      const { data } = await axios.get(`${API_URL}/api/events/admin/all?limit=50`);
       setEvents(data.events);
     } catch { toast.error('Failed to load events'); }
     setLoading(false);

@@ -6,7 +6,7 @@ services:
     plan: free
     buildCommand: cd frontend && npm install --legacy-peer-deps && npm run build && cd ../backend && npm install
     startCommand: node backend/server.js
-    healthCheckPath: /api/auth/me
+    healthCheckPath: /api/health
     autoDeploy: true
     envVars:
       - key: NODE_ENV

@@ -23,6 +23,23 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Admin: get ALL announcements (including unpublished/expired) for management panel
+// MUST be before /:id to avoid Express matching 'admin' as an id
+router.get('/admin/all', protect, adminOnly, async (req, res) => {
+  try {
+    const { page = 1, limit = 50 } = req.query;
+    const announcements = await Announcement.find()
+      .populate('createdBy', 'name')
+      .sort({ isPinned: -1, createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(Number(limit));
+    const total = await Announcement.countDocuments();
+    res.json({ announcements, total, pages: Math.ceil(total / limit) });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Public: get single
 router.get('/:id', async (req, res) => {
   try {

@@ -22,7 +22,7 @@ export default function AdminAnnouncements() {
   const load = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(`${API_URL}/api/announcements?limit=50`);
+      const { data } = await axios.get(`${API_URL}/api/announcements/admin/all?limit=50`);
       setItems(data.announcements);
     } catch { toast.error('Failed to load'); }
     setLoading(false);
