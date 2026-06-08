@@ -4,6 +4,16 @@ const Media = require('../models/Media');
 const { protect, adminOnly } = require('../middleware/auth');
 const { uploadMedia, uploadImage, uploadVideo, uploadPoster, cloudinary } = require('../config/cloudinary');
 
+// ─── Helper: wrap multer middleware so errors are forwarded to next(err) ────
+function runUpload(uploadFn) {
+  return (req, res, next) => {
+    uploadFn(req, res, (err) => {
+      if (err) return next(err);
+      next();
+    });
+  };
+}
+
 // Public: get all media
 router.get('/', async (req, res) => {
   try {
@@ -15,7 +25,7 @@ router.get('/', async (req, res) => {
     if (search) query.$or = [
       { title: { $regex: search, $options: 'i' } },
       { description: { $regex: search, $options: 'i' } },
-      { tags: { $in: [new RegExp(search, 'i')] } }
+      { tags: { $in: [new RegExp(search, 'i')] } },
     ];
     const media = await Media.find(query)
       .populate('uploadedBy', 'name')
@@ -29,7 +39,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Admin: get ALL media including private items, for the admin management panel
+// Admin: get ALL media (includes private), for management panel
 // MUST be before /:id to avoid Express matching 'admin' as an id
 router.get('/admin/all', protect, adminOnly, async (req, res) => {
   try {
@@ -69,97 +79,135 @@ router.get('/:id', async (req, res) => {
 });
 
 // Admin: upload image
-router.post('/upload/image', protect, adminOnly, uploadImage.single('file'), async (req, res) => {
-  try {
-    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-    const { title, description, category, tags, featured, isPublic } = req.body;
-    const media = await Media.create({
-      title: title || req.file.originalname,
-      description, category: category || 'gallery',
-      type: 'image',
-      url: req.file.path,
-      publicId: req.file.filename,
-      size: req.file.size,
-      tags: tags ? tags.split(',').map(t => t.trim()) : [],
-      featured: featured === 'true',
-      isPublic: isPublic !== 'false',
-      uploadedBy: req.user._id
-    });
-    res.status(201).json({ media });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+router.post(
+  '/upload/image',
+  protect,
+  adminOnly,
+  runUpload(uploadImage.single('file')),
+  async (req, res) => {
+    try {
+      if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+      const { title, description, category, tags, featured, isPublic } = req.body;
+      const media = await Media.create({
+        title: title || req.file.originalname,
+        description,
+        category: category || 'gallery',
+        type: 'image',
+        url: req.file.path,
+        publicId: req.file.filename,
+        size: req.file.size,
+        tags: tags ? tags.split(',').map(t => t.trim()) : [],
+        featured: featured === 'true',
+        isPublic: isPublic !== 'false',
+        uploadedBy: req.user._id,
+      });
+      res.status(201).json({ media });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
   }
-});
+);
 
 // Admin: upload video
-router.post('/upload/video', protect, adminOnly, uploadVideo.single('file'), async (req, res) => {
-  try {
-    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-    const { title, description, category, tags, featured, isPublic } = req.body;
-    const media = await Media.create({
-      title: title || req.file.originalname,
-      description, category: category || 'sermon',
-      type: 'video',
-      url: req.file.path,
-      publicId: req.file.filename,
-      size: req.file.size,
-      tags: tags ? tags.split(',').map(t => t.trim()) : [],
-      featured: featured === 'true',
-      isPublic: isPublic !== 'false',
-      uploadedBy: req.user._id
-    });
-    res.status(201).json({ media });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+router.post(
+  '/upload/video',
+  protect,
+  adminOnly,
+  runUpload(uploadVideo.single('file')),
+  async (req, res) => {
+    try {
+      if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+      const { title, description, category, tags, featured, isPublic } = req.body;
+      const media = await Media.create({
+        title: title || req.file.originalname,
+        description,
+        category: category || 'sermon',
+        type: 'video',
+        url: req.file.path,
+        publicId: req.file.filename,
+        size: req.file.size,
+        tags: tags ? tags.split(',').map(t => t.trim()) : [],
+        featured: featured === 'true',
+        isPublic: isPublic !== 'false',
+        uploadedBy: req.user._id,
+      });
+      res.status(201).json({ media });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
   }
-});
+);
 
 // Admin: upload poster
-router.post('/upload/poster', protect, adminOnly, uploadPoster.single('file'), async (req, res) => {
-  try {
-    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-    const { title, description, category, tags, featured, isPublic } = req.body;
-    const media = await Media.create({
-      title: title || req.file.originalname,
-      description, category: category || 'poster',
-      type: 'poster',
-      url: req.file.path,
-      publicId: req.file.filename,
-      size: req.file.size,
-      tags: tags ? tags.split(',').map(t => t.trim()) : [],
-      featured: featured === 'true',
-      isPublic: isPublic !== 'false',
-      uploadedBy: req.user._id
-    });
-    res.status(201).json({ media });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+router.post(
+  '/upload/poster',
+  protect,
+  adminOnly,
+  runUpload(uploadPoster.single('file')),
+  async (req, res) => {
+    try {
+      if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+      const { title, description, category, tags, featured, isPublic } = req.body;
+      const media = await Media.create({
+        title: title || req.file.originalname,
+        description,
+        category: category || 'poster',
+        type: 'poster',
+        url: req.file.path,
+        publicId: req.file.filename,
+        size: req.file.size,
+        tags: tags ? tags.split(',').map(t => t.trim()) : [],
+        featured: featured === 'true',
+        isPublic: isPublic !== 'false',
+        uploadedBy: req.user._id,
+      });
+      res.status(201).json({ media });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
   }
-});
+);
 
-// Admin: update media
-router.put('/:id', protect, adminOnly, async (req, res) => {
-  try {
-    const { title, description, category, tags, featured, isPublic } = req.body;
-    const media = await Media.findByIdAndUpdate(
-      req.params.id,
-      { title, description, category, tags: tags ? tags.split(',').map(t => t.trim()) : undefined, featured, isPublic },
-      { new: true }
-    );
-    if (!media) return res.status(404).json({ error: 'Media not found' });
-    res.json({ media });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+// Admin: upload generic (auto-detects image vs video)
+router.post(
+  '/upload',
+  protect,
+  adminOnly,
+  runUpload(uploadMedia.single('file')),
+  async (req, res) => {
+    try {
+      if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+      const { title, description, category, tags, featured, isPublic } = req.body;
+      const type = req.file.mimetype.startsWith('video/') ? 'video' : 'image';
+      const media = await Media.create({
+        title: title || req.file.originalname,
+        description,
+        category: category || 'gallery',
+        type,
+        url: req.file.path,
+        publicId: req.file.filename,
+        size: req.file.size,
+        tags: tags ? tags.split(',').map(t => t.trim()) : [],
+        featured: featured === 'true',
+        isPublic: isPublic !== 'false',
+        uploadedBy: req.user._id,
+      });
+      res.status(201).json({ media });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
   }
-});
+);
 
 // Admin: delete media
 router.delete('/:id', protect, adminOnly, async (req, res) => {
   try {
     const media = await Media.findById(req.params.id);
     if (!media) return res.status(404).json({ error: 'Media not found' });
-    const resourceType = media.type === 'video' ? 'video' : 'image';
-    await cloudinary.uploader.destroy(media.publicId, { resource_type: resourceType });
+    if (media.publicId) {
+      const resourceType = media.type === 'video' ? 'video' : 'image';
+      await cloudinary.uploader.destroy(media.publicId, { resource_type: resourceType });
+    }
     await media.deleteOne();
     res.json({ message: 'Media deleted successfully' });
   } catch (err) {

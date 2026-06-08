@@ -41,6 +41,21 @@ export default function AdminMedia() {
 
   useEffect(() => { loadMedia(); }, [page, filter, search]);
 
+  const [uploadProgress, setUploadProgress] = useState(0);
+
+  const handleFileChange = (e) => {
+    const f = e.target.files[0];
+    if (!f) return;
+    const isVideo = f.type.startsWith('video/');
+    const maxBytes = isVideo ? 200 * 1024 * 1024 : 20 * 1024 * 1024;
+    if (f.size > maxBytes) {
+      toast.error(`File too large. Max size: ${isVideo ? '200 MB for videos' : '20 MB for images'}.`);
+      e.target.value = '';
+      return;
+    }
+    setFile(f);
+  };
+
   const handleUpload = async (e) => {
     e.preventDefault();
     if (!file) return toast.error('Please select a file');
@@ -48,17 +63,23 @@ export default function AdminMedia() {
     const fd = new FormData();
     fd.append('file', file);
     Object.entries(form).forEach(([k, v]) => fd.append(k, v));
-    setUploading(true);
+    setUploading(true); setUploadProgress(0);
     try {
-      await axios.post(`${API_URL}${tab.endpoint}`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+      await axios.post(`${API_URL}${tab.endpoint}`, fd, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        onUploadProgress: (ev) => {
+          if (ev.total) setUploadProgress(Math.round((ev.loaded / ev.total) * 100));
+        },
+      });
       toast.success('Uploaded successfully!');
-      setFile(null); setForm({ title: '', description: '', category: 'gallery', tags: '', featured: false, isPublic: true });
+      setFile(null); setUploadProgress(0);
+      setForm({ title: '', description: '', category: 'gallery', tags: '', featured: false, isPublic: true });
       if (fileRef.current) fileRef.current.value = '';
       loadMedia();
     } catch (err) {
       toast.error(err.response?.data?.error || 'Upload failed');
     }
-    setUploading(false);
+    setUploading(false); setUploadProgress(0);
   };
 
   const handleDelete = async (id) => {
@@ -122,7 +143,7 @@ export default function AdminMedia() {
           <div className="form-group">
             <label className="form-label">File</label>
             <div className="upload-zone" onClick={() => fileRef.current?.click()}>
-              <input ref={fileRef} type="file" accept={TABS.find(t=>t.id===uploadTab)?.accept} onChange={e => setFile(e.target.files[0])} />
+              <input ref={fileRef} type="file" accept={TABS.find(t=>t.id===uploadTab)?.accept} onChange={handleFileChange} />
               {file ? (
                 <div>✅ <strong>{file.name}</strong> ({(file.size/1024/1024).toFixed(2)} MB)</div>
               ) : (
@@ -130,12 +151,22 @@ export default function AdminMedia() {
                   <div style={{fontSize:'2rem',marginBottom:'0.5rem'}}>📁</div>
                   <strong>Click to select {uploadTab}</strong>
                   <p style={{fontSize:'0.8rem',color:'var(--text-muted)',marginTop:'0.25rem'}}>
-                    {uploadTab === 'video' ? 'MP4, MOV, AVI, MKV — up to 500MB' : 'JPG, PNG, WEBP — up to 20MB'}
+                    {uploadTab === 'video' ? 'MP4, MOV, AVI, MKV — max 200 MB' : 'JPG, PNG, WEBP — max 20 MB'}
                   </p>
                 </div>
               )}
             </div>
           </div>
+          {uploading && (
+            <div style={{marginBottom:'0.75rem'}}>
+              <div style={{background:'var(--border)',borderRadius:'4px',height:'6px',overflow:'hidden'}}>
+                <div style={{background:'var(--gold)',height:'100%',width:`${uploadProgress}%`,transition:'width 0.3s ease'}} />
+              </div>
+              <p style={{fontSize:'0.75rem',color:'var(--text-muted)',marginTop:'0.25rem'}}>
+                {uploadProgress < 100 ? `Uploading… ${uploadProgress}%` : 'Processing on Cloudinary…'}
+              </p>
+            </div>
+          )}
           <button type="submit" className="btn btn-primary" disabled={uploading}>
             {uploading ? <><div className="spinner" style={{width:'1rem',height:'1rem',borderWidth:'2px'}} /> Uploading…</> : `Upload ${uploadTab.charAt(0).toUpperCase()+uploadTab.slice(1)}`}
           </button>

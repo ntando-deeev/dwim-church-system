@@ -5,10 +5,20 @@ const LiveStream = require('../models/LiveStream');
 const { protect, adminOnly } = require('../middleware/auth');
 const { uploadVideo, uploadImage, cloudinary } = require('../config/cloudinary');
 
+// ─── Helper: wrap multer middleware so errors are forwarded to next(err) ────
+function runUpload(uploadFn) {
+  return (req, res, next) => {
+    uploadFn(req, res, (err) => {
+      if (err) return next(err);
+      next();
+    });
+  };
+}
+
 // multer .fields() middleware — accepts an optional video file and an optional thumbnail image
 const uploadTVFields = uploadVideo.fields([
   { name: 'video', maxCount: 1 },
-  { name: 'thumbnail', maxCount: 1 }
+  { name: 'thumbnail', maxCount: 1 },
 ]);
 
 // ─── PUBLIC ROUTES ──────────────────────────────────────────────────────────
@@ -23,7 +33,7 @@ router.get('/content', async (req, res) => {
     if (search) query.$or = [
       { title: { $regex: search, $options: 'i' } },
       { speaker: { $regex: search, $options: 'i' } },
-      { description: { $regex: search, $options: 'i' } }
+      { description: { $regex: search, $options: 'i' } },
     ];
     const content = await TVContent.find(query)
       .populate('createdBy', 'name')
@@ -88,86 +98,119 @@ router.get('/admin/content', protect, adminOnly, async (req, res) => {
 });
 
 // Create TV content
-router.post('/content', protect, adminOnly, uploadTVFields, async (req, res) => {
-  try {
-    const { title, description, category, speaker, date, featured, isPublished, isPinned, tags, videoUrl, thumbnailUrl, duration } = req.body;
-    const data = {
-      title, description, category: category || 'sermon',
-      speaker: speaker || '',
-      date: date ? new Date(date) : new Date(),
-      featured: featured === 'true',
-      isPublished: isPublished !== 'false',
-      isPinned: isPinned === 'true',
-      tags: tags ? tags.split(',').map(t => t.trim()).filter(Boolean) : [],
-      videoUrl: videoUrl || '',
-      thumbnailUrl: thumbnailUrl || '',
-      duration: Number(duration) || 0,
-      createdBy: req.user._id,
-    };
-    const videoFile = req.files?.video?.[0];
-    const thumbFile = req.files?.thumbnail?.[0];
-    if (videoFile) {
-      data.videoUrl = videoFile.path;
-      data.videoPublicId = videoFile.filename;
-    }
-    if (thumbFile) {
-      data.thumbnailUrl = thumbFile.path;
-      data.thumbnailPublicId = thumbFile.filename;
-    }
-    const item = await TVContent.create(data);
-    res.status(201).json({ content: item });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Update TV content
-router.put('/content/:id', protect, adminOnly, uploadTVFields, async (req, res) => {
-  try {
-    const { title, description, category, speaker, date, featured, isPublished, isPinned, tags, videoUrl, thumbnailUrl, duration } = req.body;
-    const update = {
-      title, description, category,
-      speaker: speaker || '',
-      date: date ? new Date(date) : undefined,
-      featured: featured === 'true' || featured === true,
-      isPublished: isPublished !== 'false' && isPublished !== false,
-      isPinned: isPinned === 'true' || isPinned === true,
-      tags: tags ? (Array.isArray(tags) ? tags : tags.split(',').map(t => t.trim()).filter(Boolean)) : [],
-      videoUrl: videoUrl || '',
-      thumbnailUrl: thumbnailUrl || '',
-      duration: Number(duration) || 0,
-    };
-    const videoFile = req.files?.video?.[0];
-    const thumbFile = req.files?.thumbnail?.[0];
-    if (videoFile || thumbFile) {
-      const existing = await TVContent.findById(req.params.id);
+router.post(
+  '/content',
+  protect,
+  adminOnly,
+  runUpload(uploadTVFields),
+  async (req, res) => {
+    try {
+      const {
+        title, description, category, speaker, date,
+        featured, isPublished, isPinned, tags, videoUrl, thumbnailUrl, duration,
+      } = req.body;
+      const data = {
+        title, description,
+        category: category || 'sermon',
+        speaker: speaker || '',
+        date: date ? new Date(date) : new Date(),
+        featured: featured === 'true',
+        isPublished: isPublished !== 'false',
+        isPinned: isPinned === 'true',
+        tags: tags ? tags.split(',').map(t => t.trim()).filter(Boolean) : [],
+        videoUrl: videoUrl || '',
+        thumbnailUrl: thumbnailUrl || '',
+        duration: Number(duration) || 0,
+        createdBy: req.user._id,
+      };
+      const videoFile = req.files?.video?.[0];
+      const thumbFile = req.files?.thumbnail?.[0];
       if (videoFile) {
-        if (existing?.videoPublicId) {
-          await cloudinary.uploader.destroy(existing.videoPublicId, { resource_type: 'video' });
-        }
-        update.videoUrl = videoFile.path;
-        update.videoPublicId = videoFile.filename;
+        data.videoUrl = videoFile.path;
+        data.videoPublicId = videoFile.filename;
       }
       if (thumbFile) {
-        if (existing?.thumbnailPublicId) {
-          await cloudinary.uploader.destroy(existing.thumbnailPublicId);
-        }
-        update.thumbnailUrl = thumbFile.path;
-        update.thumbnailPublicId = thumbFile.filename;
+        data.thumbnailUrl = thumbFile.path;
+        data.thumbnailPublicId = thumbFile.filename;
       }
+      const item = await TVContent.create(data);
+      res.status(201).json({ content: item });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
     }
-    const item = await TVContent.findByIdAndUpdate(req.params.id, update, { new: true });
-    if (!item) return res.status(404).json({ error: 'Not found' });
-    res.json({ content: item });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
   }
-});
+);
+
+// Update TV content
+router.put(
+  '/content/:id',
+  protect,
+  adminOnly,
+  runUpload(uploadTVFields),
+  async (req, res) => {
+    try {
+      const {
+        title, description, category, speaker, date,
+        featured, isPublished, isPinned, tags, videoUrl, thumbnailUrl, duration,
+      } = req.body;
+      const update = {
+        title, description, category,
+        speaker: speaker || '',
+        date: date ? new Date(date) : undefined,
+        featured: featured === 'true' || featured === true,
+        isPublished: isPublished !== 'false' && isPublished !== false,
+        isPinned: isPinned === 'true' || isPinned === true,
+        tags: tags
+          ? (Array.isArray(tags) ? tags : tags.split(',').map(t => t.trim()).filter(Boolean))
+          : [],
+        videoUrl: videoUrl || '',
+        thumbnailUrl: thumbnailUrl || '',
+        duration: Number(duration) || 0,
+      };
+      // Remove undefined keys
+      Object.keys(update).forEach(k => update[k] === undefined && delete update[k]);
+
+      const videoFile = req.files?.video?.[0];
+      const thumbFile = req.files?.thumbnail?.[0];
+      if (videoFile || thumbFile) {
+        const existing = await TVContent.findById(req.params.id);
+        if (videoFile) {
+          if (existing?.videoPublicId) {
+            await cloudinary.uploader.destroy(existing.videoPublicId, { resource_type: 'video' });
+          }
+          update.videoUrl = videoFile.path;
+          update.videoPublicId = videoFile.filename;
+        }
+        if (thumbFile) {
+          if (existing?.thumbnailPublicId) {
+            await cloudinary.uploader.destroy(existing.thumbnailPublicId);
+          }
+          update.thumbnailUrl = thumbFile.path;
+          update.thumbnailPublicId = thumbFile.filename;
+        }
+      }
+      const item = await TVContent.findByIdAndUpdate(req.params.id, update, { new: true });
+      if (!item) return res.status(404).json({ error: 'Not found' });
+      res.json({ content: item });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  }
+);
 
 // Delete TV content
 router.delete('/content/:id', protect, adminOnly, async (req, res) => {
   try {
-    await TVContent.findByIdAndDelete(req.params.id);
+    const item = await TVContent.findById(req.params.id);
+    if (item) {
+      if (item.videoPublicId) {
+        await cloudinary.uploader.destroy(item.videoPublicId, { resource_type: 'video' });
+      }
+      if (item.thumbnailPublicId) {
+        await cloudinary.uploader.destroy(item.thumbnailPublicId);
+      }
+      await item.deleteOne();
+    }
     res.json({ message: 'Deleted' });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -175,19 +218,25 @@ router.delete('/content/:id', protect, adminOnly, async (req, res) => {
 });
 
 // Upload thumbnail for TV content
-router.post('/content/:id/thumbnail', protect, adminOnly, uploadImage.single('thumbnail'), async (req, res) => {
-  try {
-    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-    const item = await TVContent.findByIdAndUpdate(
-      req.params.id,
-      { thumbnailUrl: req.file.path, thumbnailPublicId: req.file.filename },
-      { new: true }
-    );
-    res.json({ thumbnailUrl: item.thumbnailUrl });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+router.post(
+  '/content/:id/thumbnail',
+  protect,
+  adminOnly,
+  runUpload(uploadImage.single('thumbnail')),
+  async (req, res) => {
+    try {
+      if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+      const item = await TVContent.findByIdAndUpdate(
+        req.params.id,
+        { thumbnailUrl: req.file.path, thumbnailPublicId: req.file.filename },
+        { new: true }
+      );
+      res.json({ thumbnailUrl: item.thumbnailUrl });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
   }
-});
+);
 
 // ─── LIVE STREAM ADMIN ───────────────────────────────────────────────────────
 
@@ -201,17 +250,13 @@ router.get('/admin/streams', protect, adminOnly, async (req, res) => {
   }
 });
 
-// Create a live stream
+// Create stream
 router.post('/streams', protect, adminOnly, async (req, res) => {
   try {
     const { title, description, streamUrl, chatUrl, thumbnailUrl, scheduledAt } = req.body;
     const stream = await LiveStream.create({
-      title, description,
-      streamUrl: streamUrl || '',
-      chatUrl: chatUrl || '',
-      thumbnailUrl: thumbnailUrl || '',
-      scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
-      isLive: false,
+      title, description, streamUrl, chatUrl, thumbnailUrl,
+      scheduledAt: scheduledAt ? new Date(scheduledAt) : new Date(),
       createdBy: req.user._id,
     });
     res.status(201).json({ stream });
@@ -223,22 +268,24 @@ router.post('/streams', protect, adminOnly, async (req, res) => {
 // Update stream
 router.put('/streams/:id', protect, adminOnly, async (req, res) => {
   try {
-    const stream = await LiveStream.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!stream) return res.status(404).json({ error: 'Stream not found' });
+    const { title, description, streamUrl, chatUrl, thumbnailUrl, scheduledAt } = req.body;
+    const update = { title, description, streamUrl, chatUrl, thumbnailUrl };
+    if (scheduledAt) update.scheduledAt = new Date(scheduledAt);
+    const stream = await LiveStream.findByIdAndUpdate(req.params.id, update, { new: true });
     res.json({ stream });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Go LIVE
+// Go live
 router.post('/streams/:id/go-live', protect, adminOnly, async (req, res) => {
   try {
-    // Set all other streams to not live
-    await LiveStream.updateMany({}, { isLive: false });
+    // End any other active streams first
+    await LiveStream.updateMany({ isLive: true }, { isLive: false, endedAt: new Date() });
     const stream = await LiveStream.findByIdAndUpdate(
       req.params.id,
-      { isLive: true, endedAt: null },
+      { isLive: true, startedAt: new Date() },
       { new: true }
     );
     res.json({ stream });
@@ -247,7 +294,7 @@ router.post('/streams/:id/go-live', protect, adminOnly, async (req, res) => {
   }
 });
 
-// End live stream
+// End stream
 router.post('/streams/:id/end', protect, adminOnly, async (req, res) => {
   try {
     const stream = await LiveStream.findByIdAndUpdate(
@@ -271,7 +318,6 @@ router.delete('/streams/:id', protect, adminOnly, async (req, res) => {
   }
 });
 
-
 // ─── COMMENTS (Watch Party Chat) ─────────────────────────────────────────────
 const TVComment = require('../models/TVComment');
 
@@ -286,7 +332,7 @@ router.get('/content/:id/comments', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// POST a comment on a video (must be logged in)
+// POST a comment on a video
 router.post('/content/:id/comments', protect, async (req, res) => {
   try {
     const { text } = req.body;
@@ -353,100 +399,5 @@ router.delete('/comments/:id', protect, async (req, res) => {
     res.json({ message: 'Deleted' });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
-
-// ─── WATCHLIST ────────────────────────────────────────────────────────────────
-const User = require('../models/User');
-
-// GET my watchlist
-router.get('/watchlist', protect, async (req, res) => {
-  try {
-    const user = await User.findById(req.user._id).populate({
-      path: 'watchlist',
-      match: { isPublished: true },
-      select: 'title speaker thumbnailUrl category duration views date isPinned',
-    });
-    res.json({ watchlist: user.watchlist || [] });
-  } catch (err) { res.status(500).json({ error: err.message }); }
-});
-
-// POST toggle watchlist (add or remove)
-router.post('/watchlist/:id', protect, async (req, res) => {
-  try {
-    const user = await User.findById(req.user._id);
-    const idx = user.watchlist.indexOf(req.params.id);
-    let saved;
-    if (idx === -1) {
-      user.watchlist.push(req.params.id);
-      saved = true;
-    } else {
-      user.watchlist.splice(idx, 1);
-      saved = false;
-    }
-    await user.save({ validateBeforeSave: false });
-    res.json({ saved, watchlistCount: user.watchlist.length });
-  } catch (err) { res.status(500).json({ error: err.message }); }
-});
-
-
-// ─── DOWNLOAD ────────────────────────────────────────────────────────────────
-
-// Download content (only if allowDownload is true)
-router.get('/content/:id/download', async (req, res) => {
-  try {
-    const item = await TVContent.findById(req.params.id).select('title videoUrl downloadUrl allowDownload');
-    if (!item) return res.status(404).json({ error: 'Not found' });
-    if (!item.allowDownload) return res.status(403).json({ error: 'Download not allowed for this content' });
-    const url = item.downloadUrl || item.videoUrl;
-    if (!url) return res.status(404).json({ error: 'No download URL available' });
-    // Redirect to the file URL (Cloudinary / direct)
-    res.json({ downloadUrl: url, title: item.title });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// ─── SUBTITLES ────────────────────────────────────────────────────────────────
-
-// Get subtitles for content
-router.get('/content/:id/subtitles', async (req, res) => {
-  try {
-    const item = await TVContent.findById(req.params.id).select('subtitles title');
-    if (!item) return res.status(404).json({ error: 'Not found' });
-    res.json({ subtitles: item.subtitles || [] });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Add subtitle track (admin)
-router.post('/content/:id/subtitles', protect, adminOnly, async (req, res) => {
-  try {
-    const { label, lang, url } = req.body;
-    if (!label || !lang || !url) return res.status(400).json({ error: 'label, lang, and url are required' });
-    const item = await TVContent.findByIdAndUpdate(
-      req.params.id,
-      { $push: { subtitles: { label, lang, url } } },
-      { new: true }
-    );
-    res.json({ subtitles: item.subtitles });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Remove subtitle track (admin)
-router.delete('/content/:id/subtitles/:lang', protect, adminOnly, async (req, res) => {
-  try {
-    const item = await TVContent.findByIdAndUpdate(
-      req.params.id,
-      { $pull: { subtitles: { lang: req.params.lang } } },
-      { new: true }
-    );
-    res.json({ subtitles: item.subtitles });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
 
 module.exports = router;

@@ -6,6 +6,7 @@ import { API_URL } from '../../context/AuthContext';
 import './Admin.css';
 
 const BLANK = { title: '', speaker: '', description: '', scripture: '', series: '', date: '', featured: false, isPublished: true, tags: '', videoUrl: '', thumbnailUrl: '' };
+const MAX_VIDEO_MB = 200;
 
 export default function AdminSermons() {
   const [sermons, setSermons] = useState([]);
@@ -15,6 +16,7 @@ export default function AdminSermons() {
   const [form, setForm] = useState(BLANK);
   const [videoFile, setVideoFile] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [deleteId, setDeleteId] = useState(null);
   const videoRef = useRef();
 
@@ -29,25 +31,42 @@ export default function AdminSermons() {
 
   useEffect(() => { load(); }, []);
 
-  const openCreate = () => { setEditSermon(null); setForm(BLANK); setVideoFile(null); setShowModal(true); };
+  const openCreate = () => { setEditSermon(null); setForm(BLANK); setVideoFile(null); setUploadProgress(0); setShowModal(true); };
   const openEdit = (s) => {
     setEditSermon(s);
     setForm({ ...BLANK, ...s, date: s.date?.split('T')[0]||'', tags: s.tags?.join(',') || '' });
-    setVideoFile(null); setShowModal(true);
+    setVideoFile(null); setUploadProgress(0); setShowModal(true);
+  };
+
+  const handleVideoChange = (e) => {
+    const f = e.target.files[0];
+    if (!f) return;
+    if (f.size > MAX_VIDEO_MB * 1024 * 1024) {
+      toast.error(`Video too large. Maximum size is ${MAX_VIDEO_MB} MB.`);
+      e.target.value = '';
+      return;
+    }
+    setVideoFile(f);
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); setSaving(true);
+    e.preventDefault(); setSaving(true); setUploadProgress(0);
     try {
       const fd = new FormData();
       Object.entries(form).forEach(([k, v]) => fd.append(k, String(v)));
       if (videoFile) fd.append('video', videoFile);
-      if (editSermon) await axios.put(`${API_URL}/api/sermons/${editSermon._id}`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
-      else await axios.post(`${API_URL}/api/sermons`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+      const config = {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        onUploadProgress: (e) => {
+          if (e.total) setUploadProgress(Math.round((e.loaded / e.total) * 100));
+        },
+      };
+      if (editSermon) await axios.put(`${API_URL}/api/sermons/${editSermon._id}`, fd, config);
+      else await axios.post(`${API_URL}/api/sermons`, fd, config);
       toast.success(editSermon ? 'Sermon updated' : 'Sermon created');
-      setShowModal(false); load();
-    } catch (err) { toast.error(err.response?.data?.error || 'Failed'); }
-    setSaving(false);
+      setShowModal(false); setUploadProgress(0); load();
+    } catch (err) { toast.error(err.response?.data?.error || 'Upload failed. Check your file size and try again.'); }
+    setSaving(false); setUploadProgress(0);
   };
 
   const handleDelete = async () => {
@@ -143,15 +162,25 @@ export default function AdminSermons() {
                   <label className="form-label">Thumbnail URL</label>
                   <input className="form-input" type="url" value={form.thumbnailUrl} onChange={e=>setForm({...form,thumbnailUrl:e.target.value})} placeholder="https://..." />
                 </div>
-                {!editSermon && (
-                  <div className="form-group">
-                    <label className="form-label">Upload Video File (optional, overrides URL)</label>
-                    <div className="upload-zone" onClick={() => videoRef.current?.click()}>
-                      <input ref={videoRef} type="file" accept="video/*" style={{display:'none'}} onChange={e=>setVideoFile(e.target.files[0])} />
-                      {videoFile ? <span>✅ {videoFile.name}</span> : <span>📹 Click to upload video (MP4, MOV — up to 500MB)</span>}
-                    </div>
+                <div className="form-group">
+                  <label className="form-label">Upload Video File (optional, overrides URL)</label>
+                  <div className="upload-zone" onClick={() => videoRef.current?.click()}>
+                    <input ref={videoRef} type="file" accept="video/*" style={{display:'none'}} onChange={handleVideoChange} />
+                    {videoFile
+                      ? <span>✅ {videoFile.name} ({(videoFile.size / 1024 / 1024).toFixed(1)} MB)</span>
+                      : <span>📹 Click to upload video (MP4, MOV — max {MAX_VIDEO_MB} MB)</span>}
                   </div>
-                )}
+                  {saving && videoFile && (
+                    <div style={{marginTop:'0.5rem'}}>
+                      <div style={{background:'var(--border)',borderRadius:'4px',height:'6px',overflow:'hidden'}}>
+                        <div style={{background:'var(--gold)',height:'100%',width:`${uploadProgress}%`,transition:'width 0.3s ease'}} />
+                      </div>
+                      <p style={{fontSize:'0.75rem',color:'var(--text-muted)',marginTop:'0.25rem'}}>
+                        {uploadProgress < 100 ? `Uploading… ${uploadProgress}%` : 'Processing on Cloudinary…'}
+                      </p>
+                    </div>
+                  )}
+                </div>
                 <div className="form-group">
                   <label className="form-label">Tags</label>
                   <input className="form-input" value={form.tags} onChange={e=>setForm({...form,tags:e.target.value})} placeholder="faith, healing, prayer" />

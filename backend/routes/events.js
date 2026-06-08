@@ -4,6 +4,16 @@ const Event = require('../models/Event');
 const { protect, adminOnly } = require('../middleware/auth');
 const { uploadPoster, cloudinary } = require('../config/cloudinary');
 
+// ─── Helper: wrap multer middleware so errors are forwarded to next(err) ────
+function runUpload(uploadFn) {
+  return (req, res, next) => {
+    uploadFn(req, res, (err) => {
+      if (err) return next(err);
+      next();
+    });
+  };
+}
+
 // Public: get events
 router.get('/', async (req, res) => {
   try {
@@ -55,7 +65,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Admin: create event
-router.post('/', protect, adminOnly, uploadPoster.single('poster'), async (req, res) => {
+router.post('/', protect, adminOnly, runUpload(uploadPoster.single('poster')), async (req, res) => {
   try {
     const { title, description, category, startDate, endDate, location, address,
       isRecurring, recurringPattern, registrationRequired, registrationLink,
@@ -82,7 +92,7 @@ router.post('/', protect, adminOnly, uploadPoster.single('poster'), async (req, 
 });
 
 // Admin: update event
-router.put('/:id', protect, adminOnly, uploadPoster.single('poster'), async (req, res) => {
+router.put('/:id', protect, adminOnly, runUpload(uploadPoster.single('poster')), async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);
     if (!event) return res.status(404).json({ error: 'Event not found' });

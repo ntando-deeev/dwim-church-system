@@ -4,6 +4,16 @@ const Announcement = require('../models/Announcement');
 const { protect, adminOnly } = require('../middleware/auth');
 const { uploadImage, cloudinary } = require('../config/cloudinary');
 
+// ─── Helper: wrap multer middleware so errors are forwarded to next(err) ────
+function runUpload(uploadFn) {
+  return (req, res, next) => {
+    uploadFn(req, res, (err) => {
+      if (err) return next(err);
+      next();
+    });
+  };
+}
+
 // Public: get announcements
 router.get('/', async (req, res) => {
   try {
@@ -52,7 +62,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Admin: create
-router.post('/', protect, adminOnly, uploadImage.single('image'), async (req, res) => {
+router.post('/', protect, adminOnly, runUpload(uploadImage.single('image')), async (req, res) => {
   try {
     const { title, content, type, isPinned, isPublished, expiresAt } = req.body;
     const data = {
@@ -71,7 +81,7 @@ router.post('/', protect, adminOnly, uploadImage.single('image'), async (req, re
 });
 
 // Admin: update
-router.put('/:id', protect, adminOnly, uploadImage.single('image'), async (req, res) => {
+router.put('/:id', protect, adminOnly, runUpload(uploadImage.single('image')), async (req, res) => {
   try {
     const ann = await Announcement.findById(req.params.id);
     if (!ann) return res.status(404).json({ error: 'Announcement not found' });
